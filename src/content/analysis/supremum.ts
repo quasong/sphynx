@@ -24,7 +24,6 @@ export const supremum: Entry = {
     'The supremum of a set is its least upper bound: a ceiling that no element exceeds, and the lowest such ceiling there is. It is not the largest element — a set can fail to have one of those and still have a perfectly good supremum, which is exactly why the notion is worth the extra clause.',
   tags: ['analysis', 'order'],
   figureId: 'supremum',
-  source: { work: 'MIT 18.100B', locator: 'Lecture 1' },
   timeline: {
     kind: 'motivation',
     steps: [

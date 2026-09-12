@@ -34,7 +34,6 @@ export const bolzanoWeierstrass: Entry = {
       },
     },
   ],
-  source: { work: 'Sphynx', locator: 'Sequences, 3' },
   references: [{ label: 'Bolzano (1817); Weierstraß, lectures of the 1860s' }],
   timeline: {
     kind: 'proof',

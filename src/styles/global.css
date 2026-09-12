@@ -616,7 +616,7 @@ code {
 
 .entry__head h1 {
   font-size: 36px;
-  margin: 0 0 4px;
+  margin: 0 0 18px;
 }
 
 .entry__statement {
@@ -1223,11 +1223,6 @@ code {
   flex: 1 1 280px;
 }
 
-.entry__source {
-  margin: -10px 0 18px;
-  font-size: 13px;
-  color: var(--text-faint);
-}
 
 /* Long statements are clamped on cards, with a fade rather than a hard cut. */
 

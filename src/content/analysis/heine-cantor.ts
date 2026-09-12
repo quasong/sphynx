@@ -57,7 +57,6 @@ export const heineCantor: Entry = {
       },
     },
   ],
-  source: { work: 'Sphynx', locator: 'Compactness, 3' },
   references: [{ label: 'Heine (1872), after Dirichlet; also called the Heine–Cantor theorem' }],
   timeline: {
     kind: 'proof',

@@ -21,7 +21,6 @@ export const uniformContinuity: Entry = {
     'One radius that works everywhere. Ordinary continuity lets you choose δ after seeing which point you are asked about; uniform continuity asks for a single δ good for the whole set at once. The two definitions differ by the position of one quantifier, and that position is the whole subject.',
   tags: ['analysis', 'continuity'],
   figureId: 'uniform-continuity',
-  source: { work: 'Sphynx', locator: 'Compactness, 2' },
   timeline: {
     kind: 'motivation',
     steps: [

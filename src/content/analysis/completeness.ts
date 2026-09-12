@@ -18,7 +18,6 @@ export const completeness: Entry = {
   informal:
     'ℝ is the ordered field that repairs exactly the defect the rationals have. This can be proved rather than assumed — ℝ can be built from ℚ by Dedekind cuts — but nothing later depends on how it was built, only on the property itself. Every theorem in analysis that fails over ℚ and holds over ℝ is ultimately cashing in this one sentence.',
   tags: ['analysis', 'foundations'],
-  source: { work: 'MIT 18.100B', locator: 'Lecture 2' },
   references: [
     { label: 'Rudin, Principles of Mathematical Analysis, 1.19 and the Appendix to Chapter 1' },
   ],

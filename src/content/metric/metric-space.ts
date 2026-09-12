@@ -24,7 +24,6 @@ export const metricSpace: Entry = {
     'Everything proved so far about limits used |x − y| only as a measure of how far apart two things are — never that it was a subtraction, never that the points were numbers. Keeping just the three properties the proofs actually relied on leaves a definition that applies to points in a plane, to sequences, and to functions, with every earlier definition readable word for word.',
   tags: ['analysis', 'metric spaces'],
   figureId: 'metric',
-  source: { work: 'Sphynx', locator: 'Metric spaces, 1' },
   timeline: {
     kind: 'motivation',
     steps: [
@@ -135,7 +134,6 @@ export const completeMetricSpace: Entry = {
   tags: ['analysis', 'metric spaces'],
   figureId: 'complete-metric',
   generalizes: ['ax.completeness', 'thm.cauchy-criterion'],
-  source: { work: 'Sphynx', locator: 'Metric spaces, 2' },
   timeline: {
     kind: 'motivation',
     steps: [

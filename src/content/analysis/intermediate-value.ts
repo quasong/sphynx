@@ -50,7 +50,6 @@ export const intermediateValue: Entry = {
       },
     },
   ],
-  source: { work: 'Sphynx', locator: 'Continuity, 2' },
   references: [{ label: 'Bolzano (1817), in the paper that also introduced Cauchy sequences' }],
   timeline: {
     kind: 'proof',

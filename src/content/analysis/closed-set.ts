@@ -27,7 +27,6 @@ export const closedSet: Entry = {
     'A set is closed when nothing can leak out of it by taking limits. That is the property two theorems above have been quietly using: a sequence inside K converges, and closedness is what stops the place it converges to from being somewhere the function was never defined.',
   tags: ['analysis', 'topology'],
   figureId: 'closed-set',
-  source: { work: 'Sphynx', locator: 'Compactness, 0' },
   timeline: {
     kind: 'motivation',
     steps: [

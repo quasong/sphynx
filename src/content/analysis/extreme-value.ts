@@ -58,7 +58,6 @@ export const extremeValue: Entry = {
       },
     },
   ],
-  source: { work: 'Sphynx', locator: 'Compactness, 1' },
   references: [{ label: 'Also called the Weierstrass extreme value theorem' }],
   timeline: {
     kind: 'proof',

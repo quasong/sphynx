@@ -17,7 +17,6 @@ export const qIncomplete: Entry = {
     'Knowing that √2 is not rational says a number is missing. This says something stronger and more useful: the rationals below it have no least ceiling among the rationals, so the ordered set ℚ itself is defective. Every candidate ceiling can be lowered, forever, without ever reaching one that works.',
   tags: ['analysis', 'order'],
   figureId: 'q-incomplete',
-  source: { work: 'MIT 18.100B', locator: 'Lecture 1' },
   references: [{ label: 'Rudin, Principles of Mathematical Analysis, 1.1' }],
   timeline: {
     kind: 'proof',

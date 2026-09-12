@@ -21,7 +21,6 @@ export const archimedean: Entry = {
     'Part (a): no real number is so large that repeated steps of a fixed positive size cannot pass it — there are no infinite elements. Part (b): between any two distinct reals, however close, sits a rational. Both look self-evident and neither is: they are consequences of completeness, and they fail in ordered fields that lack it.',
   tags: ['analysis', 'order'],
   figureId: 'archimedean',
-  source: { work: 'MIT 18.100B', locator: 'Lecture 2' },
   references: [{ label: 'Rudin, Principles of Mathematical Analysis, 1.20' }],
   timeline: {
     kind: 'proof',

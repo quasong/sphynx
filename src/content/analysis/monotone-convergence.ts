@@ -42,7 +42,6 @@ export const monotoneConvergence: Entry = {
       },
     },
   ],
-  source: { work: 'Sphynx', locator: 'Sequences, 2' },
   timeline: {
     kind: 'proof',
     strategy: 'direct',

@@ -22,7 +22,6 @@ export const sequenceLimit: Entry = {
     'A sequence converges to L when the terms are eventually within any tolerance you name — not merely heading in the right direction, and not merely getting there now and again. The whole weight is on "eventually": what the first thousand terms do is irrelevant, and what they all do from some point on is everything.',
   tags: ['analysis', 'sequences'],
   figureId: 'sequence-limit',
-  source: { work: 'Sphynx', locator: 'Sequences, 1' },
   timeline: {
     kind: 'motivation',
     steps: [

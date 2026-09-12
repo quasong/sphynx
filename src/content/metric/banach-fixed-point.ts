@@ -55,7 +55,6 @@ export const banachFixedPoint: Entry = {
       },
     },
   ],
-  source: { work: 'Sphynx', locator: 'Metric spaces, 3' },
   references: [{ label: 'Banach (1922); the contraction mapping principle' }],
   timeline: {
     kind: 'proof',

@@ -23,7 +23,6 @@ export const cauchySequence: Entry = {
     'A convergence test that never names the limit. Instead of asking how close the terms get to a destination, it asks how close they get to each other — which can be checked with nothing but the sequence in hand.',
   tags: ['analysis', 'sequences'],
   figureId: 'cauchy',
-  source: { work: 'Sphynx', locator: 'Sequences, 4' },
   timeline: {
     kind: 'motivation',
     steps: [
@@ -139,7 +138,6 @@ export const cauchyCriterion: Entry = {
       },
     },
   ],
-  source: { work: 'Sphynx', locator: 'Sequences, 5' },
   timeline: {
     kind: 'proof',
     strategy: 'direct',

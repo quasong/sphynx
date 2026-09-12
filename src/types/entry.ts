@@ -133,18 +133,6 @@ export interface Reference {
   url?: string;
 }
 
-/**
- * Where an entry sits in the course or text the library is following. Distinct
- * from `references`, which points outward for further reading: this says which
- * lecture a reader would have met the entry in.
- */
-export interface Source {
-  /** The course or text, e.g. "MIT 18.100B". */
-  work: string;
-  /** Where in it, e.g. "Lecture 2". */
-  locator?: string;
-}
-
 export interface Entry {
   id: EntryId;
   kind: EntryKind;
@@ -173,6 +161,5 @@ export interface Entry {
    */
   generalizes?: readonly EntryId[];
   timeline?: Timeline;
-  source?: Source;
   references?: readonly Reference[];
 }
