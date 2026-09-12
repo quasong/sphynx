@@ -60,6 +60,13 @@ export const spine: readonly SpineSection[] = [
     entries: ['thm.extreme-value', 'def.uniform-continuity', 'thm.heine-cantor'],
   },
   {
+    id: 'metric',
+    title: 'Metric spaces',
+    blurb:
+      'The same definitions with |x − y| replaced by a distance, which costs nothing and buys everything above ℝ — including a theorem that produces its own answer rather than asserting one exists.',
+    entries: ['def.metric-space', 'def.complete-metric-space', 'thm.banach-fixed-point'],
+  },
+  {
     id: 'geometry',
     title: 'Geometry',
     blurb: 'Off the analysis thread, kept for what a dissection proof lets a figure do.',

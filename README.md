@@ -25,6 +25,13 @@ under the pointer, because ten entries' worth of edges at once is a thicket.
 (`src/types/entry.ts`). Entries cite each other, so the library is a directed
 acyclic graph of mathematical dependencies.
 
+**Generalisation is a separate edge.** `Entry.generalizes` records that one
+entry restates another with less structure to lean on — the metric-space
+definition of completeness against the axiom about ℝ, say. It is kept apart
+from citations on purpose: a generalisation does not rest on the special case,
+it replaces it, and mixing the two would stop the library being readable in
+order.
+
 **Hypotheses are switchable.** A theorem names its conditions, its steps cite
 them by name, and the reader can switch one off. The figure then draws the
 counterexample instead of the theorem, and the steps that stop working are

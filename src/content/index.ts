@@ -5,6 +5,8 @@ import { cauchyCriterion, cauchySequence } from './analysis/cauchy';
 import { extremeValue } from './analysis/extreme-value';
 import { heineCantor } from './analysis/heine-cantor';
 import { intermediateValue } from './analysis/intermediate-value';
+import { banachFixedPoint } from './metric/banach-fixed-point';
+import { completeMetricSpace, metricSpace } from './metric/metric-space';
 import { monotoneConvergence } from './analysis/monotone-convergence';
 import { sequenceLimit } from './analysis/sequence-limit';
 import { uniformContinuity } from './analysis/uniform-continuity';
@@ -34,6 +36,9 @@ export const entries: readonly Entry[] = [
   extremeValue,
   uniformContinuity,
   heineCantor,
+  metricSpace,
+  completeMetricSpace,
+  banachFixedPoint,
   sqrt2Irrational,
   evenSquare,
   pythagoras,
@@ -60,6 +65,11 @@ export function citationsOf(entry: Entry): readonly EntryId[] {
     }
   }
   return [...seen];
+}
+
+/** Entries that restate this one with less structure to lean on. */
+export function generalizationsOf(id: EntryId): readonly Entry[] {
+  return entries.filter((e) => e.generalizes?.includes(id));
 }
 
 /** The reverse edge: entries whose arguments cite this one. */
@@ -110,6 +120,14 @@ export function findContentProblems(): readonly string[] {
         if (!entry.timeline?.steps.some((s) => s.id === dep)) {
           problems.push(`${entry.id} / ${step.id} depends on unknown step "${dep}"`);
         }
+      }
+    }
+    for (const ref of entry.generalizes ?? []) {
+      if (!index.has(ref)) {
+        problems.push(`${entry.id} generalizes unknown entry "${ref}"`);
+      }
+      if (ref === entry.id) {
+        problems.push(`${entry.id} generalizes itself`);
       }
     }
     // A hypothesis no step ever invokes is either decoration or a gap in the

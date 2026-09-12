@@ -1,4 +1,4 @@
-import { citationsOf, dependentsOf } from '../content';
+import { citationsOf, dependentsOf, generalizationsOf } from '../content';
 import type { Entry } from '../types/entry';
 import { EntryCard } from './EntryBadge';
 
@@ -9,6 +9,8 @@ import { EntryCard } from './EntryBadge';
 export function ReferencePanel({ entry }: { entry: Entry }) {
   const rests = citationsOf(entry);
   const used = dependentsOf(entry.id);
+  const abstracts = entry.generalizes ?? [];
+  const abstractedBy = generalizationsOf(entry.id);
 
   return (
     <aside className="references">
@@ -39,6 +41,30 @@ export function ReferencePanel({ entry }: { entry: Entry }) {
           <p className="references__empty">Nothing in the library cites it yet.</p>
         )}
       </section>
+
+      {/* Kept apart from the citation lists: a generalisation is not something
+          this entry rests on, it is the same idea one floor up or down. */}
+      {abstracts.length > 0 ? (
+        <section>
+          <h2>Generalises</h2>
+          <div className="references__grid">
+            {abstracts.map((id) => (
+              <EntryCard key={id} id={id} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {abstractedBy.length > 0 ? (
+        <section>
+          <h2>Generalised by</h2>
+          <div className="references__grid">
+            {abstractedBy.map((e) => (
+              <EntryCard key={e.id} id={e.id} />
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {entry.references && entry.references.length > 0 ? (
         <section>

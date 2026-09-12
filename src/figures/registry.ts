@@ -3,11 +3,14 @@ import type { FigureProps } from '../types/figure';
 import { ArchimedeanFigure } from './ArchimedeanFigure';
 import { BisectionFigure } from './BisectionFigure';
 import { CauchyCriterionFigure, CauchyFigure } from './CauchyFigure';
+import { CompleteMetricFigure } from './CompleteMetricFigure';
 import { EpsilonDeltaFigure } from './EpsilonDeltaFigure';
 import { ExtremeValueFigure } from './ExtremeValueFigure';
 import { PythagorasFigure } from './PythagorasFigure';
 import { QIncompleteFigure } from './QIncompleteFigure';
 import { IntermediateValueFigure } from './IntermediateValueFigure';
+import { FixedPointFigure } from './FixedPointFigure';
+import { MetricFigure } from './MetricFigure';
 import { MonotoneFigure } from './MonotoneFigure';
 import { SequenceLimitFigure } from './SequenceLimitFigure';
 import { Sqrt2Figure } from './Sqrt2Figure';
@@ -34,6 +37,9 @@ const FIGURES: Record<string, ComponentType<FigureProps>> = {
   cauchy: CauchyFigure,
   'cauchy-criterion': CauchyCriterionFigure,
   'intermediate-value': IntermediateValueFigure,
+  metric: MetricFigure,
+  'complete-metric': CompleteMetricFigure,
+  'fixed-point': FixedPointFigure,
 };
 
 export function getFigure(id: string | undefined): ComponentType<FigureProps> | undefined {

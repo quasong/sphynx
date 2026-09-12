@@ -165,6 +165,13 @@ export interface Entry {
    * and the reader can switch them off one at a time.
    */
   hypotheses?: readonly Hypothesis[];
+  /**
+   * Entries this one abstracts: the same idea restated where less structure is
+   * available. Deliberately separate from citations — a generalisation does not
+   * rest on the special case, it replaces it, and the library would stop being
+   * readable in order if the two were mixed.
+   */
+  generalizes?: readonly EntryId[];
   timeline?: Timeline;
   source?: Source;
   references?: readonly Reference[];
