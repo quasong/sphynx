@@ -36,15 +36,21 @@ export const spine: readonly SpineSection[] = [
     id: 'sequences',
     title: 'Sequences',
     blurb:
-      'What it means for terms to settle, and the two theorems that turn completeness into something that produces limits rather than merely promising them.',
-    entries: ['def.sequence-limit', 'thm.monotone-convergence', 'thm.bolzano-weierstrass'],
+      'What it means for terms to settle, the theorems that turn completeness into something which produces limits, and the restatement of completeness that survives the climb out of ℝ.',
+    entries: [
+      'def.sequence-limit',
+      'thm.monotone-convergence',
+      'thm.bolzano-weierstrass',
+      'def.cauchy-sequence',
+      'thm.cauchy-criterion',
+    ],
   },
   {
     id: 'continuity',
     title: 'Continuity',
     blurb:
       'The ε–δ definition, and what it does not say: nothing stops the radius it promises from depending on where you asked.',
-    entries: ['def.continuity-epsilon-delta'],
+    entries: ['def.continuity-epsilon-delta', 'thm.intermediate-value'],
   },
   {
     id: 'compactness',
