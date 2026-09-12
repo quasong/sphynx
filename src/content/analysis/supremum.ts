@@ -107,10 +107,10 @@ export const supremum: Entry = {
         `,
         note: 'Defining a word does not conjure the object. Whether every bounded set has a supremum is a property of the surrounding ordered set, not a theorem about the definition — and it is a property the rationals fail. That failure is what the next entry proves, and what forces the construction of ℝ.',
         role: 'conclusion',
-        reason: [
-          { type: 'step', ref: 'least' },
-          { type: 'cite', ref: 'thm.q-incomplete', note: 'the failure worked out in full' },
-        ],
+        // Deliberately not a citation: the next entry proves this, so citing it
+        // here would make the two depend on each other and the library would
+        // stop being a graph you can read in an order.
+        reason: [{ type: 'step', ref: 'least' }],
         dependsOn: ['least'],
         highlight: ['gap'],
       },

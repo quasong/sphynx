@@ -2,15 +2,15 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import { App } from './App';
-import { findDanglingCitations } from './content';
+import { findContentProblems } from './content';
 import 'katex/dist/katex.min.css';
 import './styles/global.css';
 
 // Content bugs that the rendered page would hide rather than show.
 if (import.meta.env.DEV) {
-  const problems = findDanglingCitations();
+  const problems = findContentProblems();
   if (problems.length > 0) {
-    console.error(`[sphynx] broken references:\n  ${problems.join('\n  ')}`);
+    console.error(`[sphynx] content problems:\n  ${problems.join('\n  ')}`);
   }
 }
 

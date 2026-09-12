@@ -13,6 +13,14 @@ npm install && npm run dev
 
 ## How it is put together
 
+**The index is a tree.** `src/content/spine.ts` declares the trunk: the results
+worth reading in order, grouped into sections. Everything else is placed
+against it automatically — a supporting entry hangs off the first trunk entry
+that cites it, which is where a reader working through the library would first
+need it. Adding a citation moves it without anyone maintaining a second list.
+Structural lines are always drawn; citation edges appear only for the entry
+under the pointer, because ten entries' worth of edges at once is a thicket.
+
 **Entries.** Theorem, lemma, definition and axiom are all one type, `Entry`
 (`src/types/entry.ts`). Entries cite each other, so the library is a directed
 acyclic graph of mathematical dependencies.

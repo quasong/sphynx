@@ -174,7 +174,7 @@ code {
 
 .library__head {
   max-width: 640px;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 }
 
 .library__head h1 {
@@ -187,25 +187,320 @@ code {
   margin: 0;
 }
 
-.library__group {
-  margin-bottom: 36px;
+.library__body {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 44px;
+  align-items: start;
 }
 
-.library__group h2 {
-  font-size: 14px;
+/* ---------- table of contents ---------- */
+
+.toc {
+  position: sticky;
+  top: 84px;
+}
+
+.toc h2 {
   font-family: var(--sans);
-  font-weight: 600;
-  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.09em;
+  text-transform: uppercase;
   color: var(--text-faint);
   margin: 0 0 14px;
 }
 
-.library__grid,
-.references__grid {
+.toc__section {
+  margin-bottom: 18px;
+}
+
+.toc__section-title {
+  margin: 0 0 6px;
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.toc__section ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 1px solid var(--border);
+}
+
+.toc__link {
+  display: block;
+  width: 100%;
+  padding: 4px 0 4px 12px;
+  margin-left: -1px;
+  border: 0;
+  border-left: 2px solid transparent;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: left;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.toc__link:hover {
+  color: var(--text);
+}
+
+.toc__link.is-current {
+  border-left-color: var(--accent);
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ---------- tree ---------- */
+
+.tree {
+  position: relative;
+  padding-left: 76px;
+  /* Room for the last entry to reach the top of the screen. Without it the
+     final section can never be scrolled to, so jumping to it from the contents
+     stops short and the contents cannot follow the reader there either. */
+  padding-bottom: 45vh;
+}
+
+/* Sits behind the cards, so a curve shows in the gutters and is hidden where
+   it would otherwise run across a card. */
+.tree__arcs {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tree__arc {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.tree__arc--rests-on {
+  stroke: var(--fig-b);
+}
+
+.tree__arc--used-by {
+  stroke: var(--fig-a);
+}
+
+.tree__section {
+  margin-bottom: 40px;
+}
+
+.tree__section-head {
+  margin-bottom: 18px;
+}
+
+.tree__section-head h2 {
+  font-size: 22px;
+  margin: 0 0 6px;
+}
+
+.tree__section-head p {
+  margin: 0;
+  max-width: 52ch;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.tree__nodes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+/* The trunk itself. */
+.tree__nodes::before {
+  content: '';
+  position: absolute;
+  left: -26px;
+  top: 18px;
+  bottom: 18px;
+  width: 2px;
+  background: var(--border-strong);
+}
+
+.tree__node {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
-  gap: 14px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 22px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.tree__node::before {
+  content: '';
+  position: absolute;
+  left: -32px;
+  top: 24px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--border-strong);
+  z-index: 1;
+}
+
+.tree__branches {
+  list-style: none;
+  margin: 12px 0 0;
+  padding-left: 22px;
+  border-left: 1px solid var(--border-strong);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tree__branches li {
+  position: relative;
+}
+
+.tree__branches li::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 50%;
+  width: 22px;
+  height: 1px;
+  background: var(--border-strong);
+}
+
+.tree__loose {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+.tree__legend {
+  position: sticky;
+  bottom: 14px;
+  z-index: 2;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.tree__legend-key {
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+}
+
+.tree__legend-key--rests-on {
+  background: var(--fig-b);
+}
+
+.tree__legend-key--used-by {
+  background: var(--fig-a);
+  margin-left: 10px;
+}
+
+/* ---------- tree nodes ---------- */
+
+.node {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: inherit;
+  /* Clears the sticky header when the contents scroll a node into view. */
+  scroll-margin-top: 96px;
+  transition: border-color 120ms ease, opacity 160ms ease, box-shadow 120ms ease;
+}
+
+.node__kind {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.node--theorem .node__kind { color: var(--fig-c); }
+.node--lemma .node__kind { color: var(--fig-b); }
+.node--definition .node__kind { color: var(--fig-a); }
+
+.node__title {
+  font-family: var(--serif);
+  font-weight: 600;
+}
+
+.node--trunk .node__title {
+  font-size: 19px;
+}
+
+.node--branch {
+  padding: 10px 13px;
+  background: var(--surface-2);
+}
+
+.node--branch .node__title {
+  font-size: 15px;
+}
+
+.node__statement {
+  font-size: 13px;
+  color: var(--text-dim);
+  max-height: 5.6em;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+}
+
+.node__meta {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+/* While one node is under the pointer, everything unrelated recedes. */
+.tree--focused .node.is-dimmed {
+  opacity: 0.34;
+}
+
+.node.is-active {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+.node.is-rests-on {
+  border-color: var(--fig-b);
+}
+
+.node.is-used-by {
+  border-color: var(--fig-a);
+}
+
+.node:hover {
+  border-color: var(--border-strong);
 }
 
 .entry-card {
@@ -779,6 +1074,34 @@ code {
 }
 
 /* ---------- responsive ---------- */
+
+@media (max-width: 1080px) {
+  .library__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toc {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .tree {
+    padding-left: 34px;
+  }
+
+  .tree__node {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tree__nodes::before {
+    left: -22px;
+  }
+
+  .tree__node::before {
+    left: -28px;
+  }
+}
 
 @media (max-width: 980px) {
   .entry__body {

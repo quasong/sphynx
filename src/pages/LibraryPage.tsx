@@ -1,31 +1,33 @@
-import { EntryCard } from '../components/EntryBadge';
-import { KIND_LABEL, entriesByKind } from '../content';
+import { useMemo, useState } from 'react';
+import { LibraryTree } from '../components/LibraryTree';
+import { TableOfContents } from '../components/TableOfContents';
+import { buildTree } from '../lib/tree';
+import type { EntryId } from '../types/entry';
 
 export function LibraryPage() {
-  const groups = entriesByKind();
+  const tree = useMemo(() => buildTree(), []);
+  const [current, setCurrent] = useState<EntryId | null>(null);
 
   return (
     <main className="page library">
       <header className="library__head">
         <h1>Proofs you can watch happen</h1>
         <p>
-          Pick a theorem to see its proof advance one step at a time, with the drawing
-          changing as the argument does, and every step saying which other result it
-          leans on. Pick a definition to see the failed attempts that forced it into its
-          final shape.
+          The trunk is the reading order. Supporting definitions and lemmas hang off
+          the result that first needs them. Hover any entry to see what it rests on
+          and what uses it; open one to step through its proof beside a figure that
+          changes as the argument does.
         </p>
       </header>
 
-      {groups.map((group) => (
-        <section key={group.kind} className="library__group">
-          <h2>{KIND_LABEL[group.kind]}s</h2>
-          <div className="library__grid">
-            {group.items.map((entry) => (
-              <EntryCard key={entry.id} id={entry.id} />
-            ))}
-          </div>
-        </section>
-      ))}
+      <div className="library__body">
+        <TableOfContents sections={tree.sections} current={current} />
+        <LibraryTree
+          sections={tree.sections}
+          unplaced={tree.unplaced}
+          onVisibleNode={setCurrent}
+        />
+      </div>
     </main>
   );
 }

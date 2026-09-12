@@ -61,8 +61,6 @@ export function citationsOfStep(timeline: Timeline, stepId: string): readonly En
   return out;
 }
 
-const KIND_ORDER: readonly EntryKind[] = ['theorem', 'lemma', 'corollary', 'definition', 'axiom'];
-
 export const KIND_LABEL: Record<EntryKind, string> = {
   theorem: 'Theorem',
   lemma: 'Lemma',
@@ -71,20 +69,12 @@ export const KIND_LABEL: Record<EntryKind, string> = {
   axiom: 'Axiom',
 };
 
-/** Entries grouped by kind for the library index, in a stable reading order. */
-export function entriesByKind(): readonly { kind: EntryKind; items: readonly Entry[] }[] {
-  return KIND_ORDER.map((kind) => ({
-    kind,
-    items: entries.filter((e) => e.kind === kind),
-  })).filter((group) => group.items.length > 0);
-}
-
 /**
  * Fails loudly during development if a step cites an entry that does not
  * exist. A dangling citation is a content bug that is easy to introduce and
  * invisible in the rendered page, since the badge simply would not appear.
  */
-export function findDanglingCitations(): readonly string[] {
+export function findContentProblems(): readonly string[] {
   const problems: string[] = [];
   for (const entry of entries) {
     for (const step of entry.timeline?.steps ?? []) {
@@ -103,5 +93,36 @@ export function findDanglingCitations(): readonly string[] {
       }
     }
   }
+  problems.push(...findCitationCycles());
+  return problems;
+}
+
+/**
+ * Citation cycles.
+ *
+ * Two entries citing each other reads fine in prose - one is a forward pointer
+ * to the other - but it means there is no order in which the library can be
+ * read, and the reading order is laid out as a tree on the index page. Cheaper
+ * to catch here than to notice as a strange edge in the drawing.
+ */
+function findCitationCycles(): readonly string[] {
+  const problems: string[] = [];
+  const state = new Map<EntryId, 'visiting' | 'done'>();
+
+  const walk = (id: EntryId, path: readonly EntryId[]): void => {
+    if (state.get(id) === 'done') return;
+    if (state.get(id) === 'visiting') {
+      const from = path.indexOf(id);
+      problems.push(`citation cycle: ${[...path.slice(from), id].join(' → ')}`);
+      return;
+    }
+    const entry = index.get(id);
+    if (!entry) return;
+    state.set(id, 'visiting');
+    for (const cited of citationsOf(entry)) walk(cited, [...path, id]);
+    state.set(id, 'done');
+  };
+
+  for (const entry of entries) walk(entry.id, []);
   return problems;
 }
