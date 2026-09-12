@@ -113,22 +113,28 @@ export function EntryPage() {
       <div className="entry__body">
         {Figure ? (
           <div className="entry__figure">
+            {/* Two elements: the outer one spans the viewport and centres, the
+                inner one is the content and scrolls itself if it ever outgrows
+                the screen. Centring with `justify-content` on a scrollable box
+                would cut off its top instead. */}
             <div className="entry__figure-sticky">
-              <Figure
-                stepIndex={step.index}
-                stepId={current?.id ?? null}
-                highlight={current?.highlight ?? []}
-                dropped={hypothesis.dropped}
-              />
-              {timeline ? stepper : null}
-              <HypothesisSwitches
-                hypotheses={hypotheses}
-                dropped={hypothesis.dropped}
-                onToggle={hypothesis.toggle}
-              />
-              {timeline ? (
-                <p className="entry__hint">Arrow keys move between steps.</p>
-              ) : null}
+              <div className="entry__rail">
+                <Figure
+                  stepIndex={step.index}
+                  stepId={current?.id ?? null}
+                  highlight={current?.highlight ?? []}
+                  dropped={hypothesis.dropped}
+                />
+                {timeline ? stepper : null}
+                <HypothesisSwitches
+                  hypotheses={hypotheses}
+                  dropped={hypothesis.dropped}
+                  onToggle={hypothesis.toggle}
+                />
+                {timeline ? (
+                  <p className="entry__hint">Arrow keys move between steps.</p>
+                ) : null}
+              </div>
             </div>
           </div>
         ) : null}
@@ -170,14 +176,10 @@ export function EntryPage() {
             </p>
           )}
 
-          {/* In this column rather than full width below, so the argument's
-              closing steps have something under them to scroll against. The
-              figure is pinned inside this column and stops being pinned once
-              the column runs out, which would otherwise happen exactly at the
-              last step - the one place the alignment matters most. */}
-          <ReferencePanel entry={entry} />
         </div>
       </div>
+
+      <ReferencePanel entry={entry} />
     </main>
   );
 }

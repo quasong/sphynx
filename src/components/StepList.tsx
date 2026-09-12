@@ -47,15 +47,14 @@ export function StepList({
   const labels = new Map(hypotheses.map((h) => [h.id, h.label]));
   const cards = useRef(new Map<number, HTMLLIElement>());
 
-  // Line the selected step up with the figure. `start` puts the card's top at
-  // its scroll-margin, which is set to the same offset the figure is pinned at,
-  // so the two always sit on one line and the reader's eye does not have to
-  // hunt for which step the drawing is showing.
+  // Line the selected step up with the figure. The figure is centred in the
+  // viewport, so the step is centred too and the pair always meets on the same
+  // line, whatever the height of the card.
   useEffect(() => {
     const card = cards.current.get(selected);
     if (!card) return;
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    card.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' });
+    card.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'center' });
   }, [selected]);
 
   return (

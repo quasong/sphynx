@@ -36,9 +36,10 @@
   --fig-axis: #a39c8e;
   --fig-lattice: #cac3b5;
 
-  /* Where the work area begins under the sticky header. The figure is pinned
-     here and steps scroll to here, which is what keeps them on one line. */
-  --rail-top: 84px;
+  /* Height of the sticky header. The figure column fills the viewport below it
+     and centres the drawing in that space, which is where a step scrolled to
+     `center` also lands - so the two always meet on the same line. */
+  --topbar-h: 65px;
 
   --radius: 10px;
   --shadow: 0 1px 2px rgba(29, 27, 24, 0.06), 0 8px 24px rgba(29, 27, 24, 0.05);
@@ -509,6 +510,7 @@ code {
 
 .entry-card {
   display: flex;
+  min-width: 0;
   flex-direction: column;
   gap: 6px;
   padding: 16px 18px;
@@ -548,7 +550,14 @@ code {
 .entry-card__statement {
   font-size: 14px;
   color: var(--text-dim);
-  overflow-x: auto;
+  /* Clamped in both directions with a fade rather than a hard cut: a formula
+     wider than the card is as common as one taller than it. */
+  max-height: 5.2em;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 100%),
+    linear-gradient(to right, #000 84%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
 }
 
 .entry-card__meta {
@@ -636,33 +645,41 @@ code {
 
 .entry__figure-sticky {
   position: sticky;
-  top: var(--rail-top);
+  top: var(--topbar-h);
+  height: calc(100vh - var(--topbar-h));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.entry__rail {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  /* Falls back to scrolling within the column rather than pushing the figure
-     off screen, on a viewport too short for figure and switches together. */
-  max-height: calc(100vh - var(--rail-top) - 20px);
+  /* Scrolls itself rather than overflowing the screen, on a viewport too short
+     for the figure and the switches together. */
+  max-height: 100%;
   overflow-y: auto;
+  padding: 4px 0;
 }
 
 /* On a short screen the switches are what must stay reachable, so the drawing
    gives up height first. An SVG with a viewBox letterboxes rather than
    distorting, so capping the height only makes it smaller. */
-.entry__figure-sticky .figure__svg {
+.entry__rail .figure__svg {
   max-height: 40vh;
 }
 
 @media (max-height: 760px) {
-  .entry__figure-sticky .figure__caption {
+  .entry__rail .figure__caption {
     min-height: 0;
   }
 
-  .entry__figure-sticky .figure__svg {
+  .entry__rail .figure__svg {
     max-height: 30vh;
   }
 
-  .entry__figure-sticky .entry__hint {
+  .entry__rail .entry__hint {
     display: none;
   }
 }
@@ -692,10 +709,11 @@ code {
   margin-top: 0;
 }
 
-/* Enough room under the last step for it to reach the top of the screen. The
-   references below carry most of it; this covers the rest. */
+/* Enough room under the last step for it to reach the middle of the screen,
+   and for the figure beside it to still be pinned when it gets there. Without
+   this the alignment gives up exactly where the argument concludes. */
 .entry:not(.entry--no-figure) .entry__steps {
-  padding-bottom: 6vh;
+  padding-bottom: 44vh;
 }
 
 .entry__steps-title {
@@ -831,9 +849,6 @@ code {
 }
 
 .step {
-  /* The same offset the figure is pinned at, so a step scrolled into view
-     lands level with it. */
-  scroll-margin-top: var(--rail-top);
   border: 1px solid var(--border);
   border-left: 3px solid var(--border);
   border-radius: var(--radius);
@@ -1085,11 +1100,19 @@ code {
 /* ---------- references ---------- */
 
 .references {
-  margin-top: 48px;
+  margin-top: 20px;
   padding-top: 28px;
   border-top: 1px solid var(--border);
   display: grid;
-  gap: 28px;
+  gap: 34px;
+}
+
+/* Lost in an earlier edit, which left the cards stacking full width with no
+   space between them. */
+.references__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
 }
 
 .references__empty {
@@ -1190,11 +1213,6 @@ code {
 }
 
 /* Long statements are clamped on cards, with a fade rather than a hard cut. */
-.entry-card__statement {
-  max-height: 5.2em;
-  overflow: hidden;
-  mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
-}
 
 /* ---------- hypothesis switches (pinned beside the figure) ---------- */
 
