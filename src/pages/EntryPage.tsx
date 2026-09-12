@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { KIND_LABEL, getEntry } from '../content';
 import { HypothesisBreakdown, HypothesisSwitches } from '../components/HypothesisPanel';
@@ -7,6 +7,7 @@ import { ReferencePanel } from '../components/ReferencePanel';
 import { StepList } from '../components/StepList';
 import { getFigure } from '../figures/registry';
 import { STATEMENT, useStepState } from '../hooks/useStepState';
+import { useCenteredSticky } from '../hooks/useCenteredSticky';
 import { useDroppedHypothesis } from '../hooks/useDroppedHypothesis';
 import { stepsBrokenWithout } from '../lib/hypotheses';
 
@@ -37,6 +38,8 @@ export function EntryPage() {
   const step = useStepState(steps.length);
   const hypotheses = entry?.hypotheses ?? [];
   const hypothesis = useDroppedHypothesis(hypotheses.map((h) => h.id));
+  const rail = useRef<HTMLDivElement>(null);
+  const railTop = useCenteredSticky(rail);
 
   // Opening a different entry should start at the top of it, not wherever the
   // previous entry was scrolled to - unless the link named a step, in which
@@ -113,28 +116,25 @@ export function EntryPage() {
       <div className="entry__body">
         {Figure ? (
           <div className="entry__figure">
-            {/* Two elements: the outer one spans the viewport and centres, the
-                inner one is the content and scrolls itself if it ever outgrows
-                the screen. Centring with `justify-content` on a scrollable box
-                would cut off its top instead. */}
-            <div className="entry__figure-sticky">
-              <div className="entry__rail">
-                <Figure
-                  stepIndex={step.index}
-                  stepId={current?.id ?? null}
-                  highlight={current?.highlight ?? []}
-                  dropped={hypothesis.dropped}
-                />
-                {timeline ? stepper : null}
-                <HypothesisSwitches
-                  hypotheses={hypotheses}
-                  dropped={hypothesis.dropped}
-                  onToggle={hypothesis.toggle}
-                />
-                {timeline ? (
-                  <p className="entry__hint">Arrow keys move between steps.</p>
-                ) : null}
-              </div>
+            {/* Pinned at a measured offset so it settles into the middle of
+                the screen, rather than inside a viewport-tall box that would
+                leave a band of nothing above it before anything is scrolled. */}
+            <div className="entry__figure-sticky" ref={rail} style={{ top: railTop }}>
+              <Figure
+                stepIndex={step.index}
+                stepId={current?.id ?? null}
+                highlight={current?.highlight ?? []}
+                dropped={hypothesis.dropped}
+              />
+              {timeline ? stepper : null}
+              <HypothesisSwitches
+                hypotheses={hypotheses}
+                dropped={hypothesis.dropped}
+                onToggle={hypothesis.toggle}
+              />
+              {timeline ? (
+                <p className="entry__hint">Arrow keys move between steps.</p>
+              ) : null}
             </div>
           </div>
         ) : null}

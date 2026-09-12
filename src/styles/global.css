@@ -645,41 +645,34 @@ code {
 
 .entry__figure-sticky {
   position: sticky;
-  top: var(--topbar-h);
-  height: calc(100vh - var(--topbar-h));
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.entry__rail {
+  /* `top` is measured and set inline: it centres the panel in the viewport
+     without reserving a screen of height where the column starts. */
   display: flex;
   flex-direction: column;
   gap: 12px;
   /* Scrolls itself rather than overflowing the screen, on a viewport too short
      for the figure and the switches together. */
-  max-height: 100%;
+  max-height: calc(100vh - var(--topbar-h) - 16px);
   overflow-y: auto;
-  padding: 4px 0;
 }
 
 /* On a short screen the switches are what must stay reachable, so the drawing
    gives up height first. An SVG with a viewBox letterboxes rather than
    distorting, so capping the height only makes it smaller. */
-.entry__rail .figure__svg {
+.entry__figure-sticky .figure__svg {
   max-height: 40vh;
 }
 
 @media (max-height: 760px) {
-  .entry__rail .figure__caption {
+  .entry__figure-sticky .figure__caption {
     min-height: 0;
   }
 
-  .entry__rail .figure__svg {
+  .entry__figure-sticky .figure__svg {
     max-height: 30vh;
   }
 
-  .entry__rail .entry__hint {
+  .entry__figure-sticky .entry__hint {
     display: none;
   }
 }
@@ -713,7 +706,7 @@ code {
    and for the figure beside it to still be pinned when it gets there. Without
    this the alignment gives up exactly where the argument concludes. */
 .entry:not(.entry--no-figure) .entry__steps {
-  padding-bottom: 44vh;
+  padding-bottom: 30vh;
 }
 
 .entry__steps-title {
