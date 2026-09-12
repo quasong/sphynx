@@ -2,8 +2,10 @@ import type { Entry, EntryId, EntryKind, Timeline } from '../types/entry';
 import { archimedean } from './analysis/archimedean';
 import { bolzanoWeierstrass } from './analysis/bolzano-weierstrass';
 import { extremeValue } from './analysis/extreme-value';
+import { heineCantor } from './analysis/heine-cantor';
 import { monotoneConvergence } from './analysis/monotone-convergence';
 import { sequenceLimit } from './analysis/sequence-limit';
+import { uniformContinuity } from './analysis/uniform-continuity';
 import { completeness } from './analysis/completeness';
 import { qIncomplete } from './analysis/q-incomplete';
 import { supremum } from './analysis/supremum';
@@ -23,9 +25,11 @@ export const entries: readonly Entry[] = [
   sequenceLimit,
   monotoneConvergence,
   bolzanoWeierstrass,
-  extremeValue,
-  sqrt2Irrational,
   continuity,
+  extremeValue,
+  uniformContinuity,
+  heineCantor,
+  sqrt2Irrational,
   evenSquare,
   pythagoras,
   ...foundationEntries,

@@ -9,6 +9,7 @@ import { QIncompleteFigure } from './QIncompleteFigure';
 import { MonotoneFigure } from './MonotoneFigure';
 import { SequenceLimitFigure } from './SequenceLimitFigure';
 import { Sqrt2Figure } from './Sqrt2Figure';
+import { HeineCantorFigure, UniformContinuityFigure } from './UniformContinuityFigure';
 import { SupremumFigure } from './SupremumFigure';
 
 /**
@@ -26,6 +27,8 @@ const FIGURES: Record<string, ComponentType<FigureProps>> = {
   'sequence-limit': SequenceLimitFigure,
   monotone: MonotoneFigure,
   bisection: BisectionFigure,
+  'uniform-continuity': UniformContinuityFigure,
+  'heine-cantor': HeineCantorFigure,
 };
 
 export function getFigure(id: string | undefined): ComponentType<FigureProps> | undefined {

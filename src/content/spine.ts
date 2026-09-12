@@ -40,18 +40,18 @@ export const spine: readonly SpineSection[] = [
     entries: ['def.sequence-limit', 'thm.monotone-convergence', 'thm.bolzano-weierstrass'],
   },
   {
-    id: 'compactness',
-    title: 'Compactness',
-    blurb:
-      'Where closed and bounded stops being a description and starts doing work. Each condition here can be switched off to see what it was holding up.',
-    entries: ['thm.extreme-value'],
-  },
-  {
     id: 'continuity',
     title: 'Continuity',
     blurb:
-      'The ε–δ definition. Still unattached: the metric spaces and sequences that belong between it and the foundations are not written yet.',
+      'The ε–δ definition, and what it does not say: nothing stops the radius it promises from depending on where you asked.',
     entries: ['def.continuity-epsilon-delta'],
+  },
+  {
+    id: 'compactness',
+    title: 'Compactness',
+    blurb:
+      'Where closed and bounded stops being a description and starts doing work — attaining a maximum, and making one radius serve a whole set. Each condition here can be switched off to see what it was holding up.',
+    entries: ['thm.extreme-value', 'def.uniform-continuity', 'thm.heine-cantor'],
   },
   {
     id: 'geometry',
