@@ -1,5 +1,7 @@
 import type { Entry, EntryId, EntryKind, Timeline } from '../types/entry';
 import { archimedean } from './analysis/archimedean';
+import { bolzanoWeierstrass } from './analysis/bolzano-weierstrass';
+import { extremeValue } from './analysis/extreme-value';
 import { completeness } from './analysis/completeness';
 import { qIncomplete } from './analysis/q-incomplete';
 import { supremum } from './analysis/supremum';
@@ -16,6 +18,8 @@ export const entries: readonly Entry[] = [
   qIncomplete,
   completeness,
   archimedean,
+  extremeValue,
+  bolzanoWeierstrass,
   sqrt2Irrational,
   continuity,
   evenSquare,
@@ -85,11 +89,24 @@ export function findContentProblems(): readonly string[] {
         if (reason.type === 'step' && !entry.timeline?.steps.some((s) => s.id === reason.ref)) {
           problems.push(`${entry.id} / ${step.id} cites unknown step "${reason.ref}"`);
         }
+        if (reason.type === 'hypothesis' && !entry.hypotheses?.some((h) => h.id === reason.ref)) {
+          problems.push(`${entry.id} / ${step.id} cites unknown hypothesis "${reason.ref}"`);
+        }
       }
       for (const dep of step.dependsOn ?? []) {
         if (!entry.timeline?.steps.some((s) => s.id === dep)) {
           problems.push(`${entry.id} / ${step.id} depends on unknown step "${dep}"`);
         }
+      }
+    }
+    // A hypothesis no step ever invokes is either decoration or a gap in the
+    // proof; both are worth knowing about while writing.
+    for (const hypothesis of entry.hypotheses ?? []) {
+      const used = entry.timeline?.steps.some((step) =>
+        step.reason.some((r) => r.type === 'hypothesis' && r.ref === hypothesis.id),
+      );
+      if (!used) {
+        problems.push(`${entry.id} states hypothesis "${hypothesis.id}" but no step uses it`);
       }
     }
   }

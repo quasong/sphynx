@@ -2,11 +2,14 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { KIND_LABEL, citationsOfStep, getEntry } from '../content';
 import { EntryCard } from '../components/EntryBadge';
+import { HypothesisPanel } from '../components/HypothesisPanel';
 import { MathExpr } from '../components/MathExpr';
 import { ReferencePanel } from '../components/ReferencePanel';
 import { StepList } from '../components/StepList';
 import { getFigure } from '../figures/registry';
 import { STATEMENT, useStepState } from '../hooks/useStepState';
+import { useDroppedHypothesis } from '../hooks/useDroppedHypothesis';
+import { stepsBrokenWithout } from '../lib/hypotheses';
 
 const STRATEGY_LABEL: Record<string, string> = {
   direct: 'Direct proof',
@@ -22,6 +25,8 @@ export function EntryPage() {
   const entry = getEntry(id);
   const steps = entry?.timeline?.steps ?? [];
   const step = useStepState(steps.length);
+  const hypotheses = entry?.hypotheses ?? [];
+  const hypothesis = useDroppedHypothesis(hypotheses.map((h) => h.id));
 
   // Opening a different entry should start at the top of it, not wherever the
   // previous entry was scrolled to.
@@ -44,6 +49,9 @@ export function EntryPage() {
   const Figure = getFigure(entry.figureId);
   const current = step.index >= 0 ? steps[step.index] : undefined;
   const stepCitations = timeline && current ? citationsOfStep(timeline, current.id) : [];
+  const broken = timeline
+    ? stepsBrokenWithout(timeline, hypothesis.dropped)
+    : new Set<string>();
 
   // The stepper sits under the figure when there is one, and above the steps
   // when there is not - but an entry without a figure still needs the controls.
@@ -91,6 +99,8 @@ export function EntryPage() {
         ) : null}
       </header>
 
+      <HypothesisPanel entry={entry} dropped={hypothesis.dropped} onToggle={hypothesis.toggle} />
+
       {timeline ? (
         <div className="entry__body">
           {Figure ? (
@@ -100,6 +110,7 @@ export function EntryPage() {
                   stepIndex={step.index}
                   stepId={current?.id ?? null}
                   highlight={current?.highlight ?? []}
+                  dropped={hypothesis.dropped}
                 />
                 {stepper}
                 {stepCitations.length > 0 ? (
@@ -121,13 +132,30 @@ export function EntryPage() {
             <h2 className="entry__steps-title">
               {timeline.kind === 'proof' ? 'Proof' : 'Why the definition looks like this'}
             </h2>
+            {hypothesis.dropped ? (
+              <p className="entry__proof-void">
+                With that condition removed the argument below no longer proves anything:
+                the greyed steps are the ones that fail, and everything resting on them
+                falls with them.{' '}
+                <button type="button" onClick={hypothesis.restore}>
+                  Put it back
+                </button>
+              </p>
+            ) : null}
             {Figure ? null : (
               <div className="entry__steps-controls">
                 {stepper}
                 <p className="entry__hint">Arrow keys move between steps.</p>
               </div>
             )}
-            <StepList timeline={timeline} selected={step.index} onSelect={step.select} />
+            <StepList
+              timeline={timeline}
+              selected={step.index}
+              onSelect={step.select}
+              hypotheses={hypotheses}
+              dropped={hypothesis.dropped}
+              broken={broken}
+            />
           </div>
         </div>
       ) : (

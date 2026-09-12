@@ -24,6 +24,9 @@ export type EntryId = string;
 /** A step id, unique within its own timeline. */
 export type StepId = string;
 
+/** A hypothesis id, unique within its own entry. */
+export type HypothesisId = string;
+
 export type EntryKind = 'theorem' | 'lemma' | 'corollary' | 'definition' | 'axiom';
 
 /**
@@ -32,6 +35,8 @@ export type EntryKind = 'theorem' | 'lemma' | 'corollary' | 'definition' | 'axio
  * written by hand, so the two can't drift apart.
  */
 export type Justification =
+  /** Uses one of the theorem's own hypotheses. */
+  | { type: 'hypothesis'; ref: HypothesisId; note?: string }
   /** Follows from another entry in the library. */
   | { type: 'cite'; ref: EntryId; note?: string }
   /** Follows from an earlier step of this same timeline. */
@@ -94,6 +99,34 @@ export interface Timeline {
   steps: readonly Step[];
 }
 
+/**
+ * What a theorem's conclusion becomes when one of its hypotheses is removed.
+ *
+ * This is the one thing the medium does that a printed proof cannot: a reader
+ * can switch a hypothesis off and watch both the picture and the argument fail.
+ * Every hypothesis worth stating should be able to answer "and what if not?",
+ * and a hypothesis with no counterexample is usually a hypothesis that was not
+ * needed.
+ */
+export interface Counterexample {
+  /** One line, shown on the hypothesis itself. */
+  summary: string;
+  /** The concrete object that breaks the conclusion. */
+  statement?: Latex;
+  /** What exactly goes wrong, and why the other hypotheses do not save it. */
+  note?: string;
+}
+
+export interface Hypothesis {
+  id: HypothesisId;
+  /** Short enough to sit on a switch: "K is closed". */
+  label: string;
+  statement?: Latex;
+  /** What this hypothesis buys, in the proof and in the picture. */
+  note?: string;
+  withoutIt?: Counterexample;
+}
+
 /** An external source for further reading. */
 export interface Reference {
   label: string;
@@ -127,6 +160,11 @@ export interface Entry {
    * timeline full-width rather than leaving an empty canvas.
    */
   figureId?: string;
+  /**
+   * The conditions the statement depends on, named so that steps can cite them
+   * and the reader can switch them off one at a time.
+   */
+  hypotheses?: readonly Hypothesis[];
   timeline?: Timeline;
   source?: Source;
   references?: readonly Reference[];

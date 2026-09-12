@@ -33,6 +33,13 @@ export const spine: readonly SpineSection[] = [
     ],
   },
   {
+    id: 'compactness',
+    title: 'Compactness',
+    blurb:
+      'Where closed and bounded stops being a description and starts doing work. Each condition here can be switched off to see what it was holding up.',
+    entries: ['thm.extreme-value'],
+  },
+  {
     id: 'continuity',
     title: 'Continuity',
     blurb:

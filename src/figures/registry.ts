@@ -2,6 +2,7 @@ import type { ComponentType } from 'react';
 import type { FigureProps } from '../types/figure';
 import { ArchimedeanFigure } from './ArchimedeanFigure';
 import { EpsilonDeltaFigure } from './EpsilonDeltaFigure';
+import { ExtremeValueFigure } from './ExtremeValueFigure';
 import { PythagorasFigure } from './PythagorasFigure';
 import { QIncompleteFigure } from './QIncompleteFigure';
 import { Sqrt2Figure } from './Sqrt2Figure';
@@ -18,6 +19,7 @@ const FIGURES: Record<string, ComponentType<FigureProps>> = {
   supremum: SupremumFigure,
   'q-incomplete': QIncompleteFigure,
   archimedean: ArchimedeanFigure,
+  'extreme-value': ExtremeValueFigure,
 };
 
 export function getFigure(id: string | undefined): ComponentType<FigureProps> | undefined {

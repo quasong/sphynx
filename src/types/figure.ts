@@ -1,4 +1,4 @@
-import type { StepId } from './entry';
+import type { HypothesisId, StepId } from './entry';
 
 /**
  * The contract every figure component implements.
@@ -16,4 +16,10 @@ export interface FigureProps {
   stepId: StepId | null;
   /** Emphasis keys requested by the current step. */
   highlight: readonly string[];
+  /**
+   * The hypothesis the reader has switched off, if any. A figure that draws a
+   * theorem with hypotheses answers this by drawing the counterexample instead
+   * of the theorem.
+   */
+  dropped?: HypothesisId | null;
 }

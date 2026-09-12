@@ -25,6 +25,15 @@ under the pointer, because ten entries' worth of edges at once is a thicket.
 (`src/types/entry.ts`). Entries cite each other, so the library is a directed
 acyclic graph of mathematical dependencies.
 
+**Hypotheses are switchable.** A theorem names its conditions, its steps cite
+them by name, and the reader can switch one off. The figure then draws the
+counterexample instead of the theorem, and the steps that stop working are
+marked — including the ones that never mentioned the condition but rest on a
+step that did. This is the one thing the medium does that a printed proof
+cannot, so entries whose conditions carry weight should be written this way.
+One condition at a time, deliberately: each counterexample satisfies all the
+others, which is what makes it evidence about that condition alone.
+
 **Timelines.** An entry's explanation is an ordered list of steps. For a theorem
 that list is a proof; for a definition it is the sequence of attempts and
 counterexamples leading to the final wording. Both use the same type, so there

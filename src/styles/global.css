@@ -1145,3 +1145,210 @@ code {
   overflow: hidden;
   mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
 }
+
+/* ---------- hypotheses ---------- */
+
+.hypotheses {
+  max-width: 760px;
+  margin: 0 0 32px;
+  padding: 20px 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.hypotheses--broken {
+  border-color: var(--fig-warn);
+}
+
+.hypotheses h2 {
+  margin: 0 0 4px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.hypotheses__hint {
+  margin: 0 0 14px;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.hypotheses__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.hypothesis {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.hypothesis:hover {
+  border-color: var(--border-strong);
+}
+
+/* The switch is drawn rather than a checkbox so that "on" reads as the
+   theorem's normal state and "off" as a deliberate act. */
+.hypothesis__switch {
+  flex: 0 0 auto;
+  position: relative;
+  width: 34px;
+  height: 20px;
+  margin-top: 2px;
+  border-radius: 999px;
+  background: var(--fig-good);
+  transition: background 140ms ease;
+}
+
+.hypothesis__switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 17px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--surface);
+  transition: left 140ms ease;
+}
+
+.hypothesis.is-off .hypothesis__switch {
+  background: var(--fig-warn);
+}
+
+.hypothesis.is-off .hypothesis__switch::after {
+  left: 3px;
+}
+
+.hypothesis__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.hypothesis__label {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.hypothesis.is-off .hypothesis__label {
+  text-decoration: line-through;
+  text-decoration-color: var(--fig-warn);
+  color: var(--text-dim);
+}
+
+.hypothesis__statement {
+  font-size: 13px;
+  color: var(--text-dim);
+  overflow-x: auto;
+}
+
+.hypothesis__note {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.counterexample {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  border-left: 3px solid var(--fig-warn);
+  background: var(--surface-2);
+}
+
+.counterexample__head {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.counterexample p {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.counterexample .math--block {
+  margin: 12px 0 0;
+}
+
+/* ---------- a proof with a condition removed ---------- */
+
+.entry__proof-void {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  border-left: 3px solid var(--fig-warn);
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.entry__proof-void button {
+  font: inherit;
+  font-size: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.step--broken {
+  border-left-color: var(--fig-warn);
+  background: var(--surface-2);
+}
+
+.step--broken .step__title,
+.step--broken .step__role {
+  color: var(--text-faint);
+  text-decoration: line-through;
+  text-decoration-color: var(--fig-warn);
+}
+
+.step--broken .step__number {
+  background: var(--fig-warn);
+  color: var(--surface);
+}
+
+.step__broken-tag {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--fig-warn);
+}
+
+.reason--hypothesis::before {
+  content: 'hypothesis · ';
+  color: var(--text-faint);
+}
+
+.reason--hypothesis.is-off {
+  color: var(--fig-warn);
+  font-weight: 600;
+}
