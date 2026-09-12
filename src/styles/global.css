@@ -702,12 +702,7 @@ code {
   margin-top: 0;
 }
 
-/* Enough room under the last step for it to reach the middle of the screen,
-   and for the figure beside it to still be pinned when it gets there. Without
-   this the alignment gives up exactly where the argument concludes. */
-.entry:not(.entry--no-figure) .entry__steps {
-  padding-bottom: 30vh;
-}
+
 
 .entry__steps-title {
   font-size: 13px;
@@ -1093,7 +1088,7 @@ code {
 /* ---------- references ---------- */
 
 .references {
-  margin-top: 20px;
+  margin-top: 44px;
   padding-top: 28px;
   border-top: 1px solid var(--border);
   display: grid;

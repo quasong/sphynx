@@ -33,6 +33,12 @@ interface StepListProps {
   dropped?: HypothesisId | null;
   /** Steps that no longer hold without it. */
   broken?: ReadonlySet<StepId>;
+  /**
+   * Furthest the page may be scrolled while the figure stays pinned. Centring
+   * the last steps would otherwise scroll past the end of the figure's column
+   * and drag it off the top of the screen.
+   */
+  scrollCeiling?: () => number;
 }
 
 export function StepList({
@@ -42,20 +48,36 @@ export function StepList({
   hypotheses = [],
   dropped = null,
   broken,
+  scrollCeiling,
 }: StepListProps) {
   const positions = new Map(timeline.steps.map((s, i) => [s.id, i + 1]));
   const labels = new Map(hypotheses.map((h) => [h.id, h.label]));
   const cards = useRef(new Map<number, HTMLLIElement>());
 
-  // Line the selected step up with the figure. The figure is centred in the
-  // viewport, so the step is centred too and the pair always meets on the same
-  // line, whatever the height of the card.
+  // Line the selected step up with the figure, which is centred in the
+  // viewport - so the step is centred too and the pair meets on the same line
+  // whatever the height of the card.
+  //
+  // Scrolled by hand rather than through scrollIntoView so the target can be
+  // capped. The closing steps cannot be centred without scrolling past the foot
+  // of the figure's column, which unpins the figure and cuts off the top of the
+  // drawing; the alternative was padding every page with a screenful of empty
+  // space to scroll against. Those steps settle a little below centre instead,
+  // which costs nothing a reader would notice.
   useEffect(() => {
     const card = cards.current.get(selected);
     if (!card) return;
+
+    const box = card.getBoundingClientRect();
+    const centred = window.scrollY + box.top + box.height / 2 - window.innerHeight / 2;
+    const ceiling = scrollCeiling?.() ?? Number.POSITIVE_INFINITY;
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    card.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'center' });
-  }, [selected]);
+
+    window.scrollTo({
+      top: Math.max(0, Math.min(centred, ceiling)),
+      behavior: still ? 'auto' : 'smooth',
+    });
+  }, [selected, scrollCeiling]);
 
   return (
     <ol className="steps">

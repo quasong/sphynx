@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { KIND_LABEL, getEntry } from '../content';
 import { HypothesisBreakdown, HypothesisSwitches } from '../components/HypothesisPanel';
@@ -39,7 +39,19 @@ export function EntryPage() {
   const hypotheses = entry?.hypotheses ?? [];
   const hypothesis = useDroppedHypothesis(hypotheses.map((h) => h.id));
   const rail = useRef<HTMLDivElement>(null);
+  const body = useRef<HTMLDivElement>(null);
   const railTop = useCenteredSticky(rail);
+
+  // The figure is pinned inside the two-column body and stops being pinned once
+  // that column runs out. Stepping must not scroll past that point, or the
+  // drawing slides off the top just as the argument concludes.
+  const scrollCeiling = useCallback(() => {
+    const railElement = rail.current;
+    const bodyElement = body.current;
+    if (!railElement || !bodyElement) return Number.POSITIVE_INFINITY;
+    const bottom = bodyElement.getBoundingClientRect().bottom + window.scrollY;
+    return bottom - railElement.offsetHeight - railTop;
+  }, [railTop]);
 
   // Opening a different entry should start at the top of it, not wherever the
   // previous entry was scrolled to - unless the link named a step, in which
@@ -113,7 +125,7 @@ export function EntryPage() {
         ) : null}
       </header>
 
-      <div className="entry__body">
+      <div className="entry__body" ref={body}>
         {Figure ? (
           <div className="entry__figure">
             {/* Pinned at a measured offset so it settles into the middle of
@@ -167,6 +179,7 @@ export function EntryPage() {
                 hypotheses={hypotheses}
                 dropped={hypothesis.dropped}
                 broken={broken}
+                scrollCeiling={scrollCeiling}
               />
             </div>
           ) : (
