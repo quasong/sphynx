@@ -33,6 +33,13 @@ export const spine: readonly SpineSection[] = [
     ],
   },
   {
+    id: 'sequences',
+    title: 'Sequences',
+    blurb:
+      'What it means for terms to settle, and the two theorems that turn completeness into something that produces limits rather than merely promising them.',
+    entries: ['def.sequence-limit', 'thm.monotone-convergence', 'thm.bolzano-weierstrass'],
+  },
+  {
     id: 'compactness',
     title: 'Compactness',
     blurb:

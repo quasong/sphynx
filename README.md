@@ -69,14 +69,16 @@ reflections, so what the reader sees matches what the proof claims.
 
 ## What is in it
 
-The library follows the arc of MIT 18.100B. The completeness thread runs
-supremum → ℚ has no least upper bound → the completeness axiom → Archimedean
-property and density of ℚ, and ends by producing the number the irrationality
-entry showed is not rational. Continuity is present as the ε–δ definition,
-still waiting on the metric-space material that sits between it and the
-foundations. The Pythagorean theorem is not part of that arc; it is there
-because a dissection proof is the clearest demonstration of what the figures
-can do.
+The library is organised around the mechanisms that get re-instantiated as the
+mathematics climbs, not around a syllabus. Completeness runs from the gap in ℚ
+to the axiom that fills it and ends by producing the number it began by showing
+is missing. Sequences turn that axiom into something that produces limits.
+Compactness is where closed and bounded stop being a description and start
+doing work — and where the hypotheses become switchable. Continuity is present
+as the ε–δ definition, still waiting on the metric-space material that belongs
+between it and the foundations. The Pythagorean theorem is off that arc; it is
+there because a dissection proof is the clearest demonstration of what the
+figures can do.
 
 ## Adding an entry
 
