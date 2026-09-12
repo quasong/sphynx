@@ -18,11 +18,12 @@ worth reading in order, grouped into sections. Everything else is placed
 against it automatically — a supporting entry hangs off the first trunk entry
 that cites it, which is where a reader working through the library would first
 need it. Adding a citation moves it without anyone maintaining a second list.
-Structural lines are always drawn. Citation edges are not drawn at all: a line
-carries information only when both of its ends are on screen, which stops being
-true as soon as the library is taller than a screen. Hovering an entry lists
-what it connects to by name, with an arrow for the direction to scroll and a
-click that goes there.
+Structural lines are always drawn. Citation edges are not: a line carries
+information only when both of its ends are on screen, which stops being true as
+soon as the library is taller than a screen. Hovering an entry highlights the
+related cards that are in view and names the ones that are not, with an arrow
+for the direction to scroll and a click that goes there. A card you can see is
+answered by the highlight on it, so naming it as well would only cover it.
 
 **Entries.** Theorem, lemma, definition and axiom are all one type, `Entry`
 (`src/types/entry.ts`). Entries cite each other, so the library is a directed

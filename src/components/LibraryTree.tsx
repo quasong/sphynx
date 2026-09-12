@@ -5,7 +5,7 @@ import type { TreeSection } from '../lib/tree';
 import type { Entry, EntryId } from '../types/entry';
 import { MathExpr } from './MathExpr';
 
-interface Anchor {
+interface Focus {
   /** Position of the hovered card within the tree, for placing the panel. */
   x: number;
   y: number;
@@ -13,6 +13,10 @@ interface Anchor {
   side: 'left' | 'right';
   /** Hang the panel upwards, when the card is low on the screen. */
   flip: boolean;
+  /** Only the relations the reader cannot already see, so the panel never
+   *  covers a card it is naming. */
+  restsOn: readonly EntryId[];
+  usedBy: readonly EntryId[];
 }
 
 interface LibraryTreeProps {
@@ -34,7 +38,7 @@ interface LibraryTreeProps {
  */
 export function LibraryTree({ sections, unplaced, onVisibleNode }: LibraryTreeProps) {
   const [active, setActive] = useState<EntryId | null>(null);
-  const [anchor, setAnchor] = useState<Anchor | null>(null);
+  const [focus, setFocus] = useState<Focus | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef(new Map<EntryId, HTMLElement>());
 
@@ -47,27 +51,57 @@ export function LibraryTree({ sections, unplaced, onVisibleNode }: LibraryTreePr
   // closes over this, and a fresh object each render would make it re-run.
   const related = useMemo(() => (active ? relationsOf(active) : null), [active]);
 
-  // Place the panel beside the hovered card, on whichever side has room.
+  // Work out what the reader cannot already see, and where to put the list.
   useLayoutEffect(() => {
     const container = containerRef.current;
     const element = active ? nodeRefs.current.get(active) : null;
-    if (!container || !element) {
-      setAnchor(null);
+    if (!container || !element || !related) {
+      setFocus(null);
       return;
     }
+
     const base = container.getBoundingClientRect();
     const box = element.getBoundingClientRect();
-    const side = base.right - box.right > 300 ? 'right' : 'left';
+
+    const boxOf = (id: EntryId) => nodeRefs.current.get(id)?.getBoundingClientRect();
+    const onScreen = (id: EntryId) => {
+      const r = boxOf(id);
+      if (!r) return false;
+      return r.bottom > 80 && r.top < window.innerHeight - 16;
+    };
+
+    // A card the reader can see is already answered by the highlight on it.
+    // Naming it as well would add nothing and cover it, which is exactly what
+    // happens to a trunk entry sitting beside its own branches.
+    const restsOn = related.restsOn.filter((id) => !onScreen(id));
+    const usedBy = related.usedBy.filter((id) => !onScreen(id));
+    if (restsOn.length === 0 && usedBy.length === 0) {
+      setFocus(null);
+      return;
+    }
+
+    // Keep off the side where its own visible neighbours are.
+    const neighbourRight = [...related.restsOn, ...related.usedBy].some((id) => {
+      const r = boxOf(id);
+      return r !== undefined && onScreen(id) && r.left >= box.right;
+    });
+    const roomRight = base.right - box.right > 300;
+    const roomLeft = box.left - base.left > 40;
+    const side = neighbourRight && roomLeft ? 'left' : roomRight ? 'right' : 'left';
+
     // Low on the screen the panel would run off the fold, so hang it from the
     // card's lower edge instead of its upper one.
     const flip = box.bottom > window.innerHeight * 0.6;
-    setAnchor({
+
+    setFocus({
       x: side === 'right' ? box.right - base.left + 14 : box.left - base.left - 14,
       y: (flip ? box.bottom : box.top) - base.top,
       side,
       flip,
+      restsOn,
+      usedBy,
     });
-  }, [active]);
+  }, [active, related]);
 
   // Tell the table of contents which trunk entry is currently in view.
   //
@@ -187,14 +221,8 @@ export function LibraryTree({ sections, unplaced, onVisibleNode }: LibraryTreePr
           stops being true as soon as the library is taller than a screen. Names
           stay readable at any distance, and clicking one goes there - which is
           what the line was gesturing at anyway. */}
-      {active && related && anchor ? (
-        <RelationPanel
-          anchor={anchor}
-          restsOn={related.restsOn}
-          usedBy={related.usedBy}
-          from={active}
-          nodes={nodeRefs.current}
-        />
+      {active && focus ? (
+        <RelationPanel focus={focus} from={active} nodes={nodeRefs.current} />
       ) : null}
     </div>
   );
@@ -233,21 +261,19 @@ function NodeCard({ entry, variant, state, register, onEnter }: NodeCardProps) {
 }
 
 interface RelationPanelProps {
-  anchor: Anchor;
-  restsOn: readonly EntryId[];
-  usedBy: readonly EntryId[];
+  focus: Focus;
   from: EntryId;
   nodes: Map<EntryId, HTMLElement>;
 }
 
 /**
- * What the hovered entry connects to, by name.
+ * What the hovered entry connects to that is not already on screen.
  *
- * The arrow says which way the reader would have to scroll, which is the only
- * part of the spatial information a line was carrying that survives at this
- * size; clicking takes them there, which is more than a line could do.
+ * Anything visible is answered by the highlight on the card itself, so naming
+ * it here would only cover it. The arrow says which way the reader would have
+ * to scroll, and clicking takes them there.
  */
-function RelationPanel({ anchor, restsOn, usedBy, from, nodes }: RelationPanelProps) {
+function RelationPanel({ focus, from, nodes }: RelationPanelProps) {
   const jump = (id: EntryId) => {
     nodes.get(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
@@ -278,15 +304,12 @@ function RelationPanel({ anchor, restsOn, usedBy, from, nodes }: RelationPanelPr
 
   return (
     <aside
-      className={`relations relations--${anchor.side} ${anchor.flip ? 'relations--flip' : ''}`}
-      style={{ left: anchor.x, top: anchor.y }}
+      className={`relations relations--${focus.side} ${focus.flip ? 'relations--flip' : ''}`}
+      style={{ left: focus.x, top: focus.y }}
       aria-live="polite"
     >
-      {group('Rests on', restsOn, 'rests-on')}
-      {group('Used by', usedBy, 'used-by')}
-      {restsOn.length === 0 && usedBy.length === 0 ? (
-        <p className="relations__empty">Nothing cites it, and it cites nothing.</p>
-      ) : null}
+      {group('Rests on', focus.restsOn, 'rests-on')}
+      {group('Used by', focus.usedBy, 'used-by')}
     </aside>
   );
 }

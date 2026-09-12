@@ -359,12 +359,6 @@ code {
   font-size: 12px;
 }
 
-.relations__empty {
-  margin: 0;
-  font-size: 13px;
-  font-style: italic;
-  color: var(--text-faint);
-}
 
 .tree__section {
   margin-bottom: 40px;
