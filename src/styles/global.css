@@ -271,30 +271,99 @@ code {
   padding-bottom: 45vh;
 }
 
-/* Sits behind the cards, so a curve shows in the gutters and is hidden where
-   it would otherwise run across a card. */
-.tree__arcs {
+/* ---------- relations panel ---------- */
+
+.relations {
   position: absolute;
-  inset: 0;
+  z-index: 6;
+  width: 264px;
+  max-height: 62vh;
+  overflow-y: auto;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  /* Composed from two variables so the side and the flip can both apply. */
+  --shift-x: 0;
+  --shift-y: 0;
+  transform: translate(var(--shift-x), var(--shift-y));
+}
+
+/* Anchored past the left edge of its card, so it is pulled back by its width. */
+.relations--left {
+  --shift-x: -100%;
+}
+
+.relations--flip {
+  --shift-y: -100%;
+}
+
+.relations__group + .relations__group {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.relations__group p {
+  margin: 0 0 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.relations__group--rests-on p {
+  color: var(--fig-b);
+}
+
+.relations__group--used-by p {
+  color: var(--fig-a);
+}
+
+.relations__group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.relations__group button {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
   width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  z-index: 0;
+  padding: 3px 6px;
+  margin-left: -6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  font-family: var(--serif);
+  font-size: 14px;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
 }
 
-.tree__arc {
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
+.relations__group button:hover {
+  background: var(--surface-2);
 }
 
-.tree__arc--rests-on {
-  stroke: var(--fig-b);
+.relations__arrow {
+  flex: 0 0 auto;
+  width: 10px;
+  color: var(--text-faint);
+  font-family: var(--sans);
+  font-size: 12px;
 }
 
-.tree__arc--used-by {
-  stroke: var(--fig-a);
+.relations__empty {
+  margin: 0;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-faint);
 }
 
 .tree__section {
@@ -388,40 +457,6 @@ code {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 10px;
-}
-
-.tree__legend {
-  position: sticky;
-  bottom: 14px;
-  z-index: 2;
-  display: flex;
-  width: fit-content;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  padding: 7px 14px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  font-size: 12px;
-  color: var(--text-dim);
-}
-
-.tree__legend-key {
-  display: inline-block;
-  width: 18px;
-  height: 2px;
-  border-radius: 2px;
-}
-
-.tree__legend-key--rests-on {
-  background: var(--fig-b);
-}
-
-.tree__legend-key--used-by {
-  background: var(--fig-a);
-  margin-left: 10px;
 }
 
 /* ---------- tree nodes ---------- */

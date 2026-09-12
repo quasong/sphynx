@@ -5,11 +5,14 @@ import type { TreeSection } from '../lib/tree';
 import type { Entry, EntryId } from '../types/entry';
 import { MathExpr } from './MathExpr';
 
-interface Arc {
-  key: string;
-  path: string;
-  /** Whether the related entry is something the hovered one rests on, or uses it. */
-  direction: 'rests-on' | 'used-by';
+interface Anchor {
+  /** Position of the hovered card within the tree, for placing the panel. */
+  x: number;
+  y: number;
+  /** Which side of the card the panel sits on. */
+  side: 'left' | 'right';
+  /** Hang the panel upwards, when the card is low on the screen. */
+  flip: boolean;
 }
 
 interface LibraryTreeProps {
@@ -31,7 +34,7 @@ interface LibraryTreeProps {
  */
 export function LibraryTree({ sections, unplaced, onVisibleNode }: LibraryTreeProps) {
   const [active, setActive] = useState<EntryId | null>(null);
-  const [arcs, setArcs] = useState<readonly Arc[]>([]);
+  const [anchor, setAnchor] = useState<Anchor | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef(new Map<EntryId, HTMLElement>());
 
@@ -40,79 +43,31 @@ export function LibraryTree({ sections, unplaced, onVisibleNode }: LibraryTreePr
     else nodeRefs.current.delete(id);
   }, []);
 
-  // Memoised on `active`, not recomputed per render: `measure` closes over this,
-  // and a fresh object each render would make the layout effect re-run forever.
+  // Memoised on `active`, not recomputed per render: the layout effect below
+  // closes over this, and a fresh object each render would make it re-run.
   const related = useMemo(() => (active ? relationsOf(active) : null), [active]);
 
-  // Arc geometry is measured from the rendered cards rather than computed from
-  // a layout model, so the drawing stays correct as the cards reflow.
-  const measure = useCallback(() => {
+  // Place the panel beside the hovered card, on whichever side has room.
+  useLayoutEffect(() => {
     const container = containerRef.current;
-    if (!container || !active || !related) {
-      setArcs([]);
+    const element = active ? nodeRefs.current.get(active) : null;
+    if (!container || !element) {
+      setAnchor(null);
       return;
     }
-
     const base = container.getBoundingClientRect();
-    const boxOf = (id: EntryId) => {
-      const element = nodeRefs.current.get(id);
-      if (!element) return null;
-      const box = element.getBoundingClientRect();
-      return {
-        left: box.left - base.left,
-        right: box.right - base.left,
-        y: box.top - base.top + box.height / 2,
-      };
-    };
-
-    const source = boxOf(active);
-    if (!source) {
-      setArcs([]);
-      return;
-    }
-
-    const next: Arc[] = [];
-    const add = (ids: readonly EntryId[], direction: Arc['direction']) => {
-      ids.forEach((id, i) => {
-        const target = boxOf(id);
-        if (!target) return;
-
-        // Each end leaves from the side that faces the other card, so a link
-        // across the columns is a short hop rather than a detour back around
-        // the card it started from. Cards in the same column have no facing
-        // side, so both ends use the left and the curve bulges into the gutter.
-        const sameColumn = Math.abs(source.left - target.left) < 40;
-        const rightwards = !sameColumn && target.left > source.left;
-        const reach = sameColumn ? 44 + i * 14 : 26 + i * 10;
-
-        const from = { x: rightwards ? source.right : source.left, y: source.y };
-        const to = {
-          x: sameColumn || rightwards ? target.left : target.right,
-          y: target.y,
-        };
-        const c1 = rightwards ? from.x + reach : from.x - reach;
-        const c2 = sameColumn || rightwards ? to.x - reach : to.x + reach;
-
-        next.push({
-          key: `${direction}-${id}`,
-          direction,
-          path: `M ${from.x} ${from.y} C ${c1} ${from.y}, ${c2} ${to.y}, ${to.x} ${to.y}`,
-        });
-      });
-    };
-
-    add(related.restsOn, 'rests-on');
-    add(related.usedBy, 'used-by');
-    setArcs(next);
-  }, [active, related]);
-
-  useLayoutEffect(measure, [measure]);
-
-  useEffect(() => {
-    if (!active) return undefined;
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, [active, measure]);
+    const box = element.getBoundingClientRect();
+    const side = base.right - box.right > 300 ? 'right' : 'left';
+    // Low on the screen the panel would run off the fold, so hang it from the
+    // card's lower edge instead of its upper one.
+    const flip = box.bottom > window.innerHeight * 0.6;
+    setAnchor({
+      x: side === 'right' ? box.right - base.left + 14 : box.left - base.left - 14,
+      y: (flip ? box.bottom : box.top) - base.top,
+      side,
+      flip,
+    });
+  }, [active]);
 
   // Tell the table of contents which trunk entry is currently in view.
   //
@@ -168,12 +123,6 @@ export function LibraryTree({ sections, unplaced, onVisibleNode }: LibraryTreePr
       ref={containerRef}
       onMouseLeave={() => setActive(null)}
     >
-      <svg className="tree__arcs" aria-hidden="true">
-        {arcs.map((arc) => (
-          <path key={arc.key} className={`tree__arc tree__arc--${arc.direction}`} d={arc.path} />
-        ))}
-      </svg>
-
       {sections.map((section) => (
         <section className="tree__section" key={section.id} data-section={section.id}>
           <header className="tree__section-head">
@@ -234,11 +183,18 @@ export function LibraryTree({ sections, unplaced, onVisibleNode }: LibraryTreePr
         </section>
       ) : null}
 
-      {active ? (
-        <p className="tree__legend" aria-live="polite">
-          <span className="tree__legend-key tree__legend-key--rests-on" /> rests on
-          <span className="tree__legend-key tree__legend-key--used-by" /> used by
-        </p>
+      {/* A line is only informative when both of its ends are on screen, which
+          stops being true as soon as the library is taller than a screen. Names
+          stay readable at any distance, and clicking one goes there - which is
+          what the line was gesturing at anyway. */}
+      {active && related && anchor ? (
+        <RelationPanel
+          anchor={anchor}
+          restsOn={related.restsOn}
+          usedBy={related.usedBy}
+          from={active}
+          nodes={nodeRefs.current}
+        />
       ) : null}
     </div>
   );
@@ -273,6 +229,65 @@ function NodeCard({ entry, variant, state, register, onEnter }: NodeCardProps) {
           : 'stated, not proved'}
       </span>
     </Link>
+  );
+}
+
+interface RelationPanelProps {
+  anchor: Anchor;
+  restsOn: readonly EntryId[];
+  usedBy: readonly EntryId[];
+  from: EntryId;
+  nodes: Map<EntryId, HTMLElement>;
+}
+
+/**
+ * What the hovered entry connects to, by name.
+ *
+ * The arrow says which way the reader would have to scroll, which is the only
+ * part of the spatial information a line was carrying that survives at this
+ * size; clicking takes them there, which is more than a line could do.
+ */
+function RelationPanel({ anchor, restsOn, usedBy, from, nodes }: RelationPanelProps) {
+  const jump = (id: EntryId) => {
+    nodes.get(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  const direction = (id: EntryId): string => {
+    const source = nodes.get(from)?.getBoundingClientRect();
+    const target = nodes.get(id)?.getBoundingClientRect();
+    if (!source || !target) return '';
+    return target.top < source.top ? '↑' : '↓';
+  };
+
+  const group = (label: string, ids: readonly EntryId[], tone: string) =>
+    ids.length === 0 ? null : (
+      <div className={`relations__group relations__group--${tone}`}>
+        <p>{label}</p>
+        <ul>
+          {ids.map((id) => (
+            <li key={id}>
+              <button type="button" onClick={() => jump(id)}>
+                <span className="relations__arrow">{direction(id)}</span>
+                {getEntry(id)?.title ?? id}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+
+  return (
+    <aside
+      className={`relations relations--${anchor.side} ${anchor.flip ? 'relations--flip' : ''}`}
+      style={{ left: anchor.x, top: anchor.y }}
+      aria-live="polite"
+    >
+      {group('Rests on', restsOn, 'rests-on')}
+      {group('Used by', usedBy, 'used-by')}
+      {restsOn.length === 0 && usedBy.length === 0 ? (
+        <p className="relations__empty">Nothing cites it, and it cites nothing.</p>
+      ) : null}
+    </aside>
   );
 }
 
