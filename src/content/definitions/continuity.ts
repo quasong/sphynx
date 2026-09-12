@@ -16,9 +16,10 @@ export const continuity: Entry = {
     \; |x - x_0| < \delta \;\Rightarrow\; |f(x) - f(x_0)| < \varepsilon
   `,
   informal:
-    'Read it as a game. An adversary names a tolerance ε around f(x₀); you must answer with a radius δ around x₀ small enough that the whole piece of graph above it stays inside the tolerance. f is continuous at x₀ exactly when you can always answer. The steps below show what goes wrong in every simpler formulation.',
+    'Read it as a game. An adversary names a tolerance ε around f(x₀); you must answer with a radius δ around x₀ small enough that the whole piece of graph above it stays inside the tolerance. f is continuous at x₀ exactly when you can always answer. The steps below show what goes wrong in every simpler formulation. Stated here for real functions of a real variable; the course gives it for maps between metric spaces, where |x − x₀| becomes a distance and nothing else changes.',
   tags: ['analysis'],
   figureId: 'epsilon-delta',
+  source: { work: 'MIT 18.100B', locator: 'Lecture 12' },
   references: [
     { label: 'Bolzano (1817) and Cauchy (1821) — the first ε-style arguments' },
     { label: 'Weierstraß — the modern formulation' },

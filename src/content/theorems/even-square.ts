@@ -13,6 +13,7 @@ export const evenSquare: Entry = {
   informal:
     'Squaring cannot turn an odd number into an even one. Proving the statement directly is awkward — knowing n² = 2k tells you little about n — so the proof flips it into the equivalent claim about odd numbers, where there is something concrete to compute with.',
   tags: ['number theory'],
+  source: { work: 'MIT 18.100B', locator: 'Lecture 1' },
   timeline: {
     kind: 'proof',
     strategy: 'contrapositive',

@@ -1,8 +1,11 @@
 import type { ComponentType } from 'react';
 import type { FigureProps } from '../types/figure';
+import { ArchimedeanFigure } from './ArchimedeanFigure';
 import { EpsilonDeltaFigure } from './EpsilonDeltaFigure';
 import { PythagorasFigure } from './PythagorasFigure';
+import { QIncompleteFigure } from './QIncompleteFigure';
 import { Sqrt2Figure } from './Sqrt2Figure';
+import { SupremumFigure } from './SupremumFigure';
 
 /**
  * Figures are looked up by the id an entry declares. Entries stay plain data
@@ -12,6 +15,9 @@ const FIGURES: Record<string, ComponentType<FigureProps>> = {
   pythagoras: PythagorasFigure,
   sqrt2: Sqrt2Figure,
   'epsilon-delta': EpsilonDeltaFigure,
+  supremum: SupremumFigure,
+  'q-incomplete': QIncompleteFigure,
+  archimedean: ArchimedeanFigure,
 };
 
 export function getFigure(id: string | undefined): ComponentType<FigureProps> | undefined {

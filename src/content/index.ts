@@ -1,4 +1,8 @@
 import type { Entry, EntryId, EntryKind, Timeline } from '../types/entry';
+import { archimedean } from './analysis/archimedean';
+import { completeness } from './analysis/completeness';
+import { qIncomplete } from './analysis/q-incomplete';
+import { supremum } from './analysis/supremum';
 import { foundationEntries } from './foundations';
 import { continuity } from './definitions/continuity';
 import { evenSquare } from './theorems/even-square';
@@ -7,10 +11,15 @@ import { sqrt2Irrational } from './theorems/sqrt2-irrational';
 
 /** Every entry in the library, in the order the index page presents them. */
 export const entries: readonly Entry[] = [
-  pythagoras,
+  // The completeness thread, in the order the course develops it.
+  supremum,
+  qIncomplete,
+  completeness,
+  archimedean,
   sqrt2Irrational,
   continuity,
   evenSquare,
+  pythagoras,
   ...foundationEntries,
 ];
 

@@ -16,6 +16,7 @@ export const sqrt2Irrational: Entry = {
     'No fraction of whole numbers squares to exactly 2. The proof assumes one does, insists it be written in lowest terms, and then shows that numerator and denominator are both even — which lowest terms forbids.',
   tags: ['number theory'],
   figureId: 'sqrt2',
+  source: { work: 'MIT 18.100B', locator: 'Lecture 1' },
   references: [
     { label: 'Euclid, Elements X (appendix)' },
     { label: 'Aristotle, Prior Analytics I.23 — the earliest surviving reference' },

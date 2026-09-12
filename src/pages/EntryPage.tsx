@@ -69,6 +69,12 @@ export function EntryPage() {
           {timeline?.strategy ? ` · ${STRATEGY_LABEL[timeline.strategy] ?? timeline.strategy}` : ''}
         </p>
         <h1>{entry.title}</h1>
+        {entry.source ? (
+          <p className="entry__source">
+            {entry.source.work}
+            {entry.source.locator ? ` · ${entry.source.locator}` : ''}
+          </p>
+        ) : null}
         <MathExpr tex={entry.statement} display className="entry__statement" />
         {entry.informal ? <p className="entry__informal">{entry.informal}</p> : null}
         {timeline?.given && timeline.given.length > 0 ? (

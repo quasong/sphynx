@@ -809,3 +809,16 @@ code {
 .entry__steps-controls .stepper {
   flex: 1 1 280px;
 }
+
+.entry__source {
+  margin: -10px 0 18px;
+  font-size: 13px;
+  color: var(--text-faint);
+}
+
+/* Long statements are clamped on cards, with a fade rather than a hard cut. */
+.entry-card__statement {
+  max-height: 5.2em;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+}

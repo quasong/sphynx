@@ -50,6 +50,17 @@ first-packing positions, and carried to their second-packing positions by rigid
 motions written as SVG transforms — rotations and translations only, no
 reflections, so what the reader sees matches what the proof claims.
 
+## What is in it
+
+The library follows the arc of MIT 18.100B. The completeness thread runs
+supremum → ℚ has no least upper bound → the completeness axiom → Archimedean
+property and density of ℚ, and ends by producing the number the irrationality
+entry showed is not rational. Continuity is present as the ε–δ definition,
+still waiting on the metric-space material that sits between it and the
+foundations. The Pythagorean theorem is not part of that arc; it is there
+because a dissection proof is the clearest demonstration of what the figures
+can do.
+
 ## Adding an entry
 
 1. Write the entry as a data module under `src/content/`, and add it to the
