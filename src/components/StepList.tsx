@@ -47,16 +47,15 @@ export function StepList({
   const labels = new Map(hypotheses.map((h) => [h.id, h.label]));
   const cards = useRef(new Map<number, HTMLLIElement>());
 
-  // Keep the selected step beside the figure rather than letting it walk off
-  // the bottom of the screen as the reader advances. `nearest` scrolls the
-  // least amount that brings the card into view and does nothing when it is
-  // already there, so clicking a step that is visible does not yank the page;
-  // the breathing room comes from scroll-margin on the card itself.
+  // Line the selected step up with the figure. `start` puts the card's top at
+  // its scroll-margin, which is set to the same offset the figure is pinned at,
+  // so the two always sit on one line and the reader's eye does not have to
+  // hunt for which step the drawing is showing.
   useEffect(() => {
     const card = cards.current.get(selected);
     if (!card) return;
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    card.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'nearest' });
+    card.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' });
   }, [selected]);
 
   return (

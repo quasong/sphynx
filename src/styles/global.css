@@ -36,6 +36,10 @@
   --fig-axis: #a39c8e;
   --fig-lattice: #cac3b5;
 
+  /* Where the work area begins under the sticky header. The figure is pinned
+     here and steps scroll to here, which is what keeps them on one line. */
+  --rail-top: 84px;
+
   --radius: 10px;
   --shadow: 0 1px 2px rgba(29, 27, 24, 0.06), 0 8px 24px rgba(29, 27, 24, 0.05);
   --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
@@ -559,8 +563,8 @@ code {
 /* ---------- entry ---------- */
 
 .entry__head {
-  max-width: 760px;
-  margin-bottom: 24px;
+  max-width: 860px;
+  margin-bottom: 30px;
 }
 
 .entry__kind {
@@ -594,7 +598,7 @@ code {
 }
 
 .entry__given {
-  margin-bottom: 20px;
+  margin-top: 20px;
   padding: 14px 18px;
   background: var(--surface-2);
   border-radius: var(--radius);
@@ -632,13 +636,13 @@ code {
 
 .entry__figure-sticky {
   position: sticky;
-  top: 84px;
+  top: var(--rail-top);
   display: flex;
   flex-direction: column;
   gap: 12px;
   /* Falls back to scrolling within the column rather than pushing the figure
      off screen, on a viewport too short for figure and switches together. */
-  max-height: calc(100vh - 104px);
+  max-height: calc(100vh - var(--rail-top) - 20px);
   overflow-y: auto;
 }
 
@@ -685,7 +689,13 @@ code {
 }
 
 .entry__steps {
-  margin-top: 26px;
+  margin-top: 0;
+}
+
+/* Enough room under the last step for it to reach the top of the screen. The
+   references below carry most of it; this covers the rest. */
+.entry:not(.entry--no-figure) .entry__steps {
+  padding-bottom: 6vh;
 }
 
 .entry__steps-title {
@@ -821,11 +831,9 @@ code {
 }
 
 .step {
-  /* Room left above and below when a step is scrolled into view: clear of the
-     sticky header, and far enough off the bottom edge to sit beside the figure
-     rather than clinging to the fold. */
-  scroll-margin-top: 100px;
-  scroll-margin-bottom: 140px;
+  /* The same offset the figure is pinned at, so a step scrolled into view
+     lands level with it. */
+  scroll-margin-top: var(--rail-top);
   border: 1px solid var(--border);
   border-left: 3px solid var(--border);
   border-radius: var(--radius);
@@ -1297,7 +1305,7 @@ code {
 /* ---------- what switching one off costs ---------- */
 
 .breakdown {
-  margin: 22px 0 0;
+  margin: 0 0 22px;
   padding: 16px 20px;
   border-radius: var(--radius);
   border: 1px solid var(--fig-warn);

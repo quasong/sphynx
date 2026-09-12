@@ -39,9 +39,13 @@ export function EntryPage() {
   const hypothesis = useDroppedHypothesis(hypotheses.map((h) => h.id));
 
   // Opening a different entry should start at the top of it, not wherever the
-  // previous entry was scrolled to.
+  // previous entry was scrolled to - unless the link named a step, in which
+  // case the reader asked for that step and the step list is already scrolling
+  // it into view. Child effects run first, so without this check the jump to
+  // the top would silently undo that.
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (step.index === STATEMENT) window.scrollTo(0, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (!entry) {
@@ -88,6 +92,22 @@ export function EntryPage() {
             {entry.source.locator ? ` · ${entry.source.locator}` : ''}
           </p>
         ) : null}
+
+        <MathExpr tex={entry.statement} display className="entry__statement" />
+        {entry.informal ? <p className="entry__informal">{entry.informal}</p> : null}
+
+        {timeline?.given && timeline.given.length > 0 ? (
+          <div className="entry__given">
+            <h2>Given</h2>
+            <ul>
+              {timeline.given.map((g) => (
+                <li key={g}>
+                  <MathExpr tex={g} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </header>
 
       <div className="entry__body">
@@ -114,9 +134,9 @@ export function EntryPage() {
         ) : null}
 
         <div className="entry__reading">
-          <MathExpr tex={entry.statement} display className="entry__statement" />
-          {entry.informal ? <p className="entry__informal">{entry.informal}</p> : null}
-
+          {/* Kept in this column rather than the header: switching a condition
+              off must not resize the block above the figure, or the figure
+              would jump every time a switch is thrown. */}
           <HypothesisBreakdown
             entry={entry}
             dropped={hypothesis.dropped}
@@ -125,19 +145,6 @@ export function EntryPage() {
 
           {timeline ? (
             <div className="entry__steps">
-              {timeline.given && timeline.given.length > 0 ? (
-                <div className="entry__given">
-                  <h2>Given</h2>
-                  <ul>
-                    {timeline.given.map((g) => (
-                      <li key={g}>
-                        <MathExpr tex={g} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
               <h2 className="entry__steps-title">
                 {timeline.kind === 'proof' ? 'Proof' : 'Why the definition looks like this'}
               </h2>
@@ -162,10 +169,15 @@ export function EntryPage() {
               arguments in the library cite it.
             </p>
           )}
+
+          {/* In this column rather than full width below, so the argument's
+              closing steps have something under them to scroll against. The
+              figure is pinned inside this column and stops being pinned once
+              the column runs out, which would otherwise happen exactly at the
+              last step - the one place the alignment matters most. */}
+          <ReferencePanel entry={entry} />
         </div>
       </div>
-
-      <ReferencePanel entry={entry} />
     </main>
   );
 }
