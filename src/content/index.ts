@@ -2,6 +2,7 @@ import type { Entry, EntryId, EntryKind, Timeline } from '../types/entry';
 import { archimedean } from './analysis/archimedean';
 import { bolzanoWeierstrass } from './analysis/bolzano-weierstrass';
 import { cauchyCriterion, cauchySequence } from './analysis/cauchy';
+import { closedSet } from './analysis/closed-set';
 import { extremeValue } from './analysis/extreme-value';
 import { heineCantor } from './analysis/heine-cantor';
 import { intermediateValue } from './analysis/intermediate-value';
@@ -32,6 +33,7 @@ export const entries: readonly Entry[] = [
   cauchyCriterion,
   continuity,
   intermediateValue,
+  closedSet,
   extremeValue,
   uniformContinuity,
   heineCantor,

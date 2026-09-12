@@ -182,7 +182,10 @@ export const completeMetricSpace: Entry = {
         `,
         note: 'A subset of a complete space is complete exactly when it is closed — a Cauchy sequence inside it still converges in the big space, and closedness is what keeps the limit from escaping. The same word "closed" that made the extreme value theorem work is doing the same job here.',
         role: 'observation',
-        reason: [{ type: 'step', ref: 'answers' }],
+        reason: [
+          { type: 'step', ref: 'answers' },
+          { type: 'cite', ref: 'def.closed-set' },
+        ],
         dependsOn: ['answers'],
         highlight: ['interval'],
       },

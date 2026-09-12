@@ -114,7 +114,10 @@ export const heineCantor: Entry = {
         claim: String.raw`x \in K`,
         note: 'Without this the argument converges on a point where f says nothing, and the next step has no continuity to invoke.',
         role: 'derivation',
-        reason: [{ type: 'hypothesis', ref: 'closed' }],
+        reason: [
+          { type: 'hypothesis', ref: 'closed' },
+          { type: 'cite', ref: 'def.closed-set' },
+        ],
         dependsOn: ['subsequence'],
         highlight: ['accumulate'],
       },

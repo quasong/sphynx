@@ -105,7 +105,10 @@ export const extremeValue: Entry = {
         claim: String.raw`x \in K`,
         note: 'Without this the limit could sit just outside the set, where f says nothing at all and the next step would have nothing to evaluate.',
         role: 'derivation',
-        reason: [{ type: 'hypothesis', ref: 'closed' }],
+        reason: [
+          { type: 'hypothesis', ref: 'closed' },
+          { type: 'cite', ref: 'def.closed-set' },
+        ],
         dependsOn: ['subsequence'],
         highlight: ['limit'],
       },
