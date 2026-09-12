@@ -54,15 +54,19 @@ export function LibraryTree({ sections, unplaced, onVisibleNode }: LibraryTreePr
     }
 
     const base = container.getBoundingClientRect();
-    const anchorOf = (id: EntryId) => {
+    const boxOf = (id: EntryId) => {
       const element = nodeRefs.current.get(id);
       if (!element) return null;
       const box = element.getBoundingClientRect();
-      return { x: box.left - base.left, y: box.top - base.top + box.height / 2 };
+      return {
+        left: box.left - base.left,
+        right: box.right - base.left,
+        y: box.top - base.top + box.height / 2,
+      };
     };
 
-    const from = anchorOf(active);
-    if (!from) {
+    const source = boxOf(active);
+    if (!source) {
       setArcs([]);
       return;
     }
@@ -70,15 +74,29 @@ export function LibraryTree({ sections, unplaced, onVisibleNode }: LibraryTreePr
     const next: Arc[] = [];
     const add = (ids: readonly EntryId[], direction: Arc['direction']) => {
       ids.forEach((id, i) => {
-        const to = anchorOf(id);
-        if (!to) return;
-        // Control points sit to the left of each endpoint, so the curve leaves
-        // and arrives horizontally whether the two cards share a column or not.
-        const reach = 44 + i * 14;
+        const target = boxOf(id);
+        if (!target) return;
+
+        // Each end leaves from the side that faces the other card, so a link
+        // across the columns is a short hop rather than a detour back around
+        // the card it started from. Cards in the same column have no facing
+        // side, so both ends use the left and the curve bulges into the gutter.
+        const sameColumn = Math.abs(source.left - target.left) < 40;
+        const rightwards = !sameColumn && target.left > source.left;
+        const reach = sameColumn ? 44 + i * 14 : 26 + i * 10;
+
+        const from = { x: rightwards ? source.right : source.left, y: source.y };
+        const to = {
+          x: sameColumn || rightwards ? target.left : target.right,
+          y: target.y,
+        };
+        const c1 = rightwards ? from.x + reach : from.x - reach;
+        const c2 = sameColumn || rightwards ? to.x - reach : to.x + reach;
+
         next.push({
           key: `${direction}-${id}`,
           direction,
-          path: `M ${from.x} ${from.y} C ${from.x - reach} ${from.y}, ${to.x - reach} ${to.y}, ${to.x} ${to.y}`,
+          path: `M ${from.x} ${from.y} C ${c1} ${from.y}, ${c2} ${to.y}, ${to.x} ${to.y}`,
         });
       });
     };
