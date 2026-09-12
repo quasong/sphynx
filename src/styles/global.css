@@ -388,14 +388,23 @@ code {
 }
 
 /* The trunk itself. */
+/* The rail runs the whole height of the section and fades at both ends, so the
+   breaks at section headings read as one path continuing rather than as
+   segments that stop and start. */
 .tree__nodes::before {
   content: '';
   position: absolute;
-  left: -26px;
-  top: 18px;
-  bottom: 18px;
-  width: 2px;
-  background: var(--border-strong);
+  left: -25px;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--border-strong) 28px,
+    var(--border-strong) calc(100% - 28px),
+    transparent
+  );
 }
 
 .tree__node {
@@ -407,17 +416,43 @@ code {
   margin-bottom: 20px;
 }
 
+/* Filled with the page colour rather than the card colour, so the marker cuts
+   the rail cleanly instead of sitting on it as a paler disc. */
 .tree__node::before {
   content: '';
   position: absolute;
-  left: -32px;
-  top: 24px;
-  width: 14px;
-  height: 14px;
+  left: -30px;
+  top: 30px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: var(--surface);
+  background: var(--bg);
   border: 2px solid var(--border-strong);
+  box-shadow: 0 0 0 4px var(--bg);
   z-index: 1;
+  transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+/* The rail answers the same hover the cards do: the marker takes the colour of
+   whatever relation its entry has to the one under the pointer. */
+.tree__node:has(.node.is-active)::before {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.35);
+}
+
+.tree__node:has(.node.is-rests-on)::before {
+  border-color: var(--fig-b);
+  background: var(--fig-b);
+}
+
+.tree__node:has(.node.is-used-by)::before {
+  border-color: var(--fig-a);
+  background: var(--fig-a);
+}
+
+.tree--focused .tree__node:has(.node.is-dimmed)::before {
+  opacity: 0.34;
 }
 
 .tree__branches {
@@ -1185,11 +1220,11 @@ code {
   }
 
   .tree__nodes::before {
-    left: -22px;
+    left: -21px;
   }
 
   .tree__node::before {
-    left: -28px;
+    left: -26px;
   }
 }
 
