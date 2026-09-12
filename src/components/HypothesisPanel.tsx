@@ -1,72 +1,90 @@
-import type { Entry, HypothesisId } from '../types/entry';
+import type { Entry, Hypothesis, HypothesisId } from '../types/entry';
 import { MathExpr } from './MathExpr';
 
-interface HypothesisPanelProps {
-  entry: Entry;
+interface SwitchesProps {
+  hypotheses: readonly Hypothesis[];
   dropped: HypothesisId | null;
   onToggle(id: HypothesisId): void;
 }
 
 /**
- * The conditions, as switches.
+ * The switches, kept compact enough to sit directly under the figure.
  *
- * A reader who can only read the hypotheses tends to treat them as paperwork
- * attached to the statement. Switching one off and watching the picture fail is
- * the difference between knowing a theorem has three conditions and knowing
- * what each of them is for.
+ * Adjacency is the whole point: flipping a condition and seeing the drawing
+ * answer has to happen in one glance, so the switches live in the same pinned
+ * column as the figure and carry nothing but their labels. The prose about what
+ * each condition buys, and what breaks without it, appears beside the proof at
+ * the moment it becomes relevant.
  */
-export function HypothesisPanel({ entry, dropped, onToggle }: HypothesisPanelProps) {
-  const hypotheses = entry.hypotheses;
-  if (!hypotheses || hypotheses.length === 0) return null;
-
-  const active = hypotheses.find((h) => h.id === dropped);
+export function HypothesisSwitches({ hypotheses, dropped, onToggle }: SwitchesProps) {
+  if (hypotheses.length === 0) return null;
 
   return (
-    <section className={`hypotheses ${dropped ? 'hypotheses--broken' : ''}`}>
-      <h2>Hypotheses</h2>
-      <p className="hypotheses__hint">
-        Switch one off to see what it was holding up. Each counterexample keeps the
-        other conditions intact, so what fails is down to that condition alone.
-      </p>
-
-      <ul className="hypotheses__list">
+    <section className={`switches ${dropped ? 'switches--broken' : ''}`}>
+      <h2>
+        Hypotheses
+        <span className="switches__hint">switch one off to see what it holds up</span>
+      </h2>
+      <ul>
         {hypotheses.map((hypothesis) => {
           const off = hypothesis.id === dropped;
           return (
             <li key={hypothesis.id}>
               <button
                 type="button"
-                className={`hypothesis ${off ? 'is-off' : ''}`}
+                className={`switch ${off ? 'is-off' : ''}`}
                 onClick={() => onToggle(hypothesis.id)}
                 aria-pressed={!off}
               >
-                <span className="hypothesis__switch" aria-hidden="true" />
-                <span className="hypothesis__body">
-                  <span className="hypothesis__label">{hypothesis.label}</span>
-                  {hypothesis.statement ? (
-                    <MathExpr tex={hypothesis.statement} className="hypothesis__statement" />
-                  ) : null}
-                  {hypothesis.note ? (
-                    <span className="hypothesis__note">{hypothesis.note}</span>
-                  ) : null}
-                </span>
+                <span className="switch__track" aria-hidden="true" />
+                <span className="switch__label">{hypothesis.label}</span>
               </button>
             </li>
           );
         })}
       </ul>
+    </section>
+  );
+}
 
-      {active?.withoutIt ? (
-        <div className="counterexample" role="status">
-          <p className="counterexample__head">
-            Without “{active.label}”: {active.withoutIt.summary}
-          </p>
-          {active.withoutIt.statement ? (
-            <MathExpr tex={active.withoutIt.statement} display />
-          ) : null}
-          {active.withoutIt.note ? <p>{active.withoutIt.note}</p> : null}
-        </div>
+interface BreakdownProps {
+  entry: Entry;
+  dropped: HypothesisId | null;
+  onRestore(): void;
+}
+
+/**
+ * What the reader gets back for switching a condition off: the object that
+ * breaks the theorem, and notice that the argument below has stopped being one.
+ * Both belong at the head of the proof, which is what they are about.
+ */
+export function HypothesisBreakdown({ entry, dropped, onRestore }: BreakdownProps) {
+  const hypothesis = entry.hypotheses?.find((h) => h.id === dropped);
+  const counterexample = hypothesis?.withoutIt;
+  if (!hypothesis || !counterexample) return null;
+
+  return (
+    <section className="breakdown" role="status">
+      <p className="breakdown__head">
+        Without “{hypothesis.label}”: {counterexample.summary}
+      </p>
+
+      {counterexample.statement ? <MathExpr tex={counterexample.statement} display /> : null}
+      {counterexample.note ? <p>{counterexample.note}</p> : null}
+
+      {hypothesis.note ? (
+        <p className="breakdown__buys">
+          <span>What it was buying</span> {hypothesis.note}
+        </p>
       ) : null}
+
+      <p className="breakdown__void">
+        The greyed steps below are the ones that fail, and everything resting on them
+        falls with them.{' '}
+        <button type="button" onClick={onRestore}>
+          Put it back
+        </button>
+      </p>
     </section>
   );
 }

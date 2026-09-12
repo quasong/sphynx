@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { KIND_LABEL, citationsOfStep, getEntry } from '../content';
-import { EntryCard } from '../components/EntryBadge';
-import { HypothesisPanel } from '../components/HypothesisPanel';
+import { KIND_LABEL, getEntry } from '../content';
+import { HypothesisBreakdown, HypothesisSwitches } from '../components/HypothesisPanel';
 import { MathExpr } from '../components/MathExpr';
 import { ReferencePanel } from '../components/ReferencePanel';
 import { StepList } from '../components/StepList';
@@ -20,6 +19,17 @@ const STRATEGY_LABEL: Record<string, string> = {
   cases: 'Proof by cases',
 };
 
+/**
+ * Two columns, and which side a thing lands on is decided by whether the reader
+ * acts on it or reads it.
+ *
+ * The left column is pinned and holds the figure with the controls that drive
+ * it - the stepper and the hypothesis switches - because the value of a switch
+ * is entirely in seeing the drawing answer it. The right column scrolls and
+ * holds everything that is read rather than operated: the statement, what the
+ * proof assumes, the steps, and the consequences of having switched something
+ * off.
+ */
 export function EntryPage() {
   const { id } = useParams();
   const entry = getEntry(id);
@@ -48,13 +58,8 @@ export function EntryPage() {
   const timeline = entry.timeline;
   const Figure = getFigure(entry.figureId);
   const current = step.index >= 0 ? steps[step.index] : undefined;
-  const stepCitations = timeline && current ? citationsOfStep(timeline, current.id) : [];
-  const broken = timeline
-    ? stepsBrokenWithout(timeline, hypothesis.dropped)
-    : new Set<string>();
+  const broken = timeline ? stepsBrokenWithout(timeline, hypothesis.dropped) : new Set<string>();
 
-  // The stepper sits under the figure when there is one, and above the steps
-  // when there is not - but an entry without a figure still needs the controls.
   const stepper = (
     <nav className="stepper" aria-label="Walk through the argument">
       <button type="button" onClick={step.previous} disabled={step.atStart}>
@@ -83,87 +88,82 @@ export function EntryPage() {
             {entry.source.locator ? ` · ${entry.source.locator}` : ''}
           </p>
         ) : null}
-        <MathExpr tex={entry.statement} display className="entry__statement" />
-        {entry.informal ? <p className="entry__informal">{entry.informal}</p> : null}
-        {timeline?.given && timeline.given.length > 0 ? (
-          <div className="entry__given">
-            <h2>Given</h2>
-            <ul>
-              {timeline.given.map((g) => (
-                <li key={g}>
-                  <MathExpr tex={g} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
       </header>
 
-      <HypothesisPanel entry={entry} dropped={hypothesis.dropped} onToggle={hypothesis.toggle} />
-
-      {timeline ? (
-        <div className="entry__body">
-          {Figure ? (
-            <div className="entry__figure">
-              <div className="entry__figure-sticky">
-                <Figure
-                  stepIndex={step.index}
-                  stepId={current?.id ?? null}
-                  highlight={current?.highlight ?? []}
-                  dropped={hypothesis.dropped}
-                />
-                {stepper}
-                {stepCitations.length > 0 ? (
-                  <div className="entry__step-cites">
-                    <h2>This step uses</h2>
-                    <div className="references__grid">
-                      {stepCitations.map((cid) => (
-                        <EntryCard key={cid} id={cid} />
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
+      <div className="entry__body">
+        {Figure ? (
+          <div className="entry__figure">
+            <div className="entry__figure-sticky">
+              <Figure
+                stepIndex={step.index}
+                stepId={current?.id ?? null}
+                highlight={current?.highlight ?? []}
+                dropped={hypothesis.dropped}
+              />
+              {timeline ? stepper : null}
+              <HypothesisSwitches
+                hypotheses={hypotheses}
+                dropped={hypothesis.dropped}
+                onToggle={hypothesis.toggle}
+              />
+              {timeline ? (
                 <p className="entry__hint">Arrow keys move between steps.</p>
-              </div>
+              ) : null}
             </div>
-          ) : null}
-
-          <div className="entry__steps">
-            <h2 className="entry__steps-title">
-              {timeline.kind === 'proof' ? 'Proof' : 'Why the definition looks like this'}
-            </h2>
-            {hypothesis.dropped ? (
-              <p className="entry__proof-void">
-                With that condition removed the argument below no longer proves anything:
-                the greyed steps are the ones that fail, and everything resting on them
-                falls with them.{' '}
-                <button type="button" onClick={hypothesis.restore}>
-                  Put it back
-                </button>
-              </p>
-            ) : null}
-            {Figure ? null : (
-              <div className="entry__steps-controls">
-                {stepper}
-                <p className="entry__hint">Arrow keys move between steps.</p>
-              </div>
-            )}
-            <StepList
-              timeline={timeline}
-              selected={step.index}
-              onSelect={step.select}
-              hypotheses={hypotheses}
-              dropped={hypothesis.dropped}
-              broken={broken}
-            />
           </div>
+        ) : null}
+
+        <div className="entry__reading">
+          <MathExpr tex={entry.statement} display className="entry__statement" />
+          {entry.informal ? <p className="entry__informal">{entry.informal}</p> : null}
+
+          <HypothesisBreakdown
+            entry={entry}
+            dropped={hypothesis.dropped}
+            onRestore={hypothesis.restore}
+          />
+
+          {timeline ? (
+            <div className="entry__steps">
+              {timeline.given && timeline.given.length > 0 ? (
+                <div className="entry__given">
+                  <h2>Given</h2>
+                  <ul>
+                    {timeline.given.map((g) => (
+                      <li key={g}>
+                        <MathExpr tex={g} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              <h2 className="entry__steps-title">
+                {timeline.kind === 'proof' ? 'Proof' : 'Why the definition looks like this'}
+              </h2>
+              {Figure ? null : (
+                <div className="entry__steps-controls">
+                  {stepper}
+                  <p className="entry__hint">Arrow keys move between steps.</p>
+                </div>
+              )}
+              <StepList
+                timeline={timeline}
+                selected={step.index}
+                onSelect={step.select}
+                hypotheses={hypotheses}
+                dropped={hypothesis.dropped}
+                broken={broken}
+              />
+            </div>
+          ) : (
+            <p className="entry__stub">
+              This entry is stated but not yet proved here. It is included because other
+              arguments in the library cite it.
+            </p>
+          )}
         </div>
-      ) : (
-        <p className="entry__stub">
-          This entry is stated but not yet proved here. It is included because other
-          arguments in the library cite it.
-        </p>
-      )}
+      </div>
 
       <ReferencePanel entry={entry} />
     </main>

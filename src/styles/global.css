@@ -559,8 +559,8 @@ code {
 /* ---------- entry ---------- */
 
 .entry__head {
-  max-width: 720px;
-  margin-bottom: 32px;
+  max-width: 760px;
+  margin-bottom: 24px;
 }
 
 .entry__kind {
@@ -574,11 +574,12 @@ code {
 
 .entry__head h1 {
   font-size: 36px;
-  margin: 0 0 18px;
+  margin: 0 0 4px;
 }
 
 .entry__statement {
   display: block;
+  margin-top: 0;
   padding: 18px 20px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -593,7 +594,7 @@ code {
 }
 
 .entry__given {
-  margin-top: 20px;
+  margin-bottom: 20px;
   padding: 14px 18px;
   background: var(--surface-2);
   border-radius: var(--radius);
@@ -617,9 +618,11 @@ code {
 
 .entry__body {
   display: grid;
-  grid-template-columns: minmax(0, 460px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 470px) minmax(0, 1fr);
   gap: 40px;
-  align-items: start;
+  /* Deliberately not `align-items: start`: that shrinks the figure column to
+     its own content, leaving the sticky block no room to travel, so the figure
+     scrolls away with the proof instead of staying beside it. */
 }
 
 .entry--no-figure .entry__body {
@@ -632,7 +635,32 @@ code {
   top: 84px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
+  /* Falls back to scrolling within the column rather than pushing the figure
+     off screen, on a viewport too short for figure and switches together. */
+  max-height: calc(100vh - 104px);
+  overflow-y: auto;
+}
+
+/* On a short screen the switches are what must stay reachable, so the drawing
+   gives up height first. An SVG with a viewBox letterboxes rather than
+   distorting, so capping the height only makes it smaller. */
+.entry__figure-sticky .figure__svg {
+  max-height: 40vh;
+}
+
+@media (max-height: 760px) {
+  .entry__figure-sticky .figure__caption {
+    min-height: 0;
+  }
+
+  .entry__figure-sticky .figure__svg {
+    max-height: 30vh;
+  }
+
+  .entry__figure-sticky .entry__hint {
+    display: none;
+  }
 }
 
 .entry__hint {
@@ -650,6 +678,14 @@ code {
   text-transform: uppercase;
   color: var(--text-faint);
   margin: 0 0 10px;
+}
+
+.entry__reading {
+  min-width: 0;
+}
+
+.entry__steps {
+  margin-top: 26px;
 }
 
 .entry__steps-title {
@@ -690,6 +726,7 @@ code {
   font-size: 13px;
   color: var(--text-dim);
   line-height: 1.45;
+  /* Reserved so the panel below does not jump as captions change length. */
   min-height: 2.9em;
 }
 
@@ -1146,23 +1183,25 @@ code {
   mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
 }
 
-/* ---------- hypotheses ---------- */
+/* ---------- hypothesis switches (pinned beside the figure) ---------- */
 
-.hypotheses {
-  max-width: 760px;
-  margin: 0 0 32px;
-  padding: 20px 22px;
+.switches {
+  padding: 12px 14px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
 }
 
-.hypotheses--broken {
+.switches--broken {
   border-color: var(--fig-warn);
 }
 
-.hypotheses h2 {
-  margin: 0 0 4px;
+.switches h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0 0 10px;
   font-family: var(--sans);
   font-size: 11px;
   font-weight: 700;
@@ -1171,28 +1210,29 @@ code {
   color: var(--text-faint);
 }
 
-.hypotheses__hint {
-  margin: 0 0 14px;
-  font-size: 14px;
-  color: var(--text-dim);
+.switches__hint {
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 12px;
 }
 
-.hypotheses__list {
+.switches ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
-.hypothesis {
+.switch {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  align-items: center;
+  gap: 11px;
   width: 100%;
-  padding: 12px 14px;
+  padding: 7px 10px;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 8px;
   background: var(--surface);
   font: inherit;
   text-align: left;
@@ -1201,111 +1241,98 @@ code {
   transition: border-color 120ms ease, background 120ms ease;
 }
 
-.hypothesis:hover {
+.switch:hover {
   border-color: var(--border-strong);
 }
 
-/* The switch is drawn rather than a checkbox so that "on" reads as the
-   theorem's normal state and "off" as a deliberate act. */
-.hypothesis__switch {
+/* Drawn rather than a checkbox, so "on" reads as the theorem's ordinary state
+   and "off" as something the reader did. */
+.switch__track {
   flex: 0 0 auto;
   position: relative;
-  width: 34px;
-  height: 20px;
-  margin-top: 2px;
+  width: 32px;
+  height: 18px;
   border-radius: 999px;
   background: var(--fig-good);
   transition: background 140ms ease;
 }
 
-.hypothesis__switch::after {
+.switch__track::after {
   content: '';
   position: absolute;
   top: 3px;
   left: 17px;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--surface);
   transition: left 140ms ease;
 }
 
-.hypothesis.is-off .hypothesis__switch {
+.switch.is-off .switch__track {
   background: var(--fig-warn);
 }
 
-.hypothesis.is-off .hypothesis__switch::after {
+.switch.is-off .switch__track::after {
   left: 3px;
 }
 
-.hypothesis__body {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
-
-.hypothesis__label {
+.switch__label {
   font-family: var(--serif);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 600;
 }
 
-.hypothesis.is-off .hypothesis__label {
+.switch.is-off .switch__label {
   text-decoration: line-through;
   text-decoration-color: var(--fig-warn);
   color: var(--text-dim);
 }
 
-.hypothesis__statement {
-  font-size: 13px;
-  color: var(--text-dim);
-  overflow-x: auto;
-}
+/* ---------- what switching one off costs ---------- */
 
-.hypothesis__note {
-  font-size: 14px;
-  color: var(--text-dim);
-}
-
-.counterexample {
-  margin-top: 14px;
-  padding: 16px 18px;
+.breakdown {
+  margin: 22px 0 0;
+  padding: 16px 20px;
   border-radius: var(--radius);
-  border-left: 3px solid var(--fig-warn);
-  background: var(--surface-2);
+  border: 1px solid var(--fig-warn);
+  background: var(--surface);
 }
 
-.counterexample__head {
+.breakdown__head {
   margin: 0;
   font-family: var(--serif);
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
 }
 
-.counterexample p {
+.breakdown p {
   margin: 10px 0 0;
   font-size: 14px;
   color: var(--text-dim);
 }
 
-.counterexample .math--block {
+.breakdown .math--block {
   margin: 12px 0 0;
+  overflow-x: auto;
 }
 
-/* ---------- a proof with a condition removed ---------- */
-
-.entry__proof-void {
-  margin: 0 0 14px;
-  padding: 12px 14px;
-  border-radius: var(--radius);
-  background: var(--surface-2);
-  border-left: 3px solid var(--fig-warn);
-  font-size: 14px;
-  color: var(--text-dim);
+.breakdown__buys span {
+  font-weight: 700;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  margin-right: 4px;
 }
 
-.entry__proof-void button {
+.breakdown__void {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.breakdown__void button {
   font: inherit;
   font-size: 14px;
   padding: 0;
@@ -1315,6 +1342,8 @@ code {
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* ---------- steps that stop working ---------- */
 
 .step--broken {
   border-left-color: var(--fig-warn);
