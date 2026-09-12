@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import type {
   Hypothesis,
   HypothesisId,
@@ -44,6 +45,19 @@ export function StepList({
 }: StepListProps) {
   const positions = new Map(timeline.steps.map((s, i) => [s.id, i + 1]));
   const labels = new Map(hypotheses.map((h) => [h.id, h.label]));
+  const cards = useRef(new Map<number, HTMLLIElement>());
+
+  // Keep the selected step beside the figure rather than letting it walk off
+  // the bottom of the screen as the reader advances. `nearest` scrolls the
+  // least amount that brings the card into view and does nothing when it is
+  // already there, so clicking a step that is visible does not yank the page;
+  // the breathing room comes from scroll-margin on the card itself.
+  useEffect(() => {
+    const card = cards.current.get(selected);
+    if (!card) return;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    card.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'nearest' });
+  }, [selected]);
 
   return (
     <ol className="steps">
@@ -51,6 +65,10 @@ export function StepList({
         <StepItem
           key={step.id}
           step={step}
+          register={(element) => {
+            if (element) cards.current.set(i, element);
+            else cards.current.delete(i);
+          }}
           position={i + 1}
           positions={positions}
           labels={labels}
@@ -66,6 +84,7 @@ export function StepList({
 
 interface StepItemProps {
   step: Step;
+  register(element: HTMLLIElement | null): void;
   position: number;
   positions: Map<string, number>;
   labels: Map<HypothesisId, string>;
@@ -77,6 +96,7 @@ interface StepItemProps {
 
 function StepItem({
   step,
+  register,
   position,
   positions,
   labels,
@@ -91,6 +111,7 @@ function StepItem({
 
   return (
     <li
+      ref={register}
       className={`step step--${state} step--role-${step.role} ${broken ? 'step--broken' : ''}`}
       onClick={onSelect}
     >

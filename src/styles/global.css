@@ -821,6 +821,11 @@ code {
 }
 
 .step {
+  /* Room left above and below when a step is scrolled into view: clear of the
+     sticky header, and far enough off the bottom edge to sit beside the figure
+     rather than clinging to the fold. */
+  scroll-margin-top: 100px;
+  scroll-margin-bottom: 140px;
   border: 1px solid var(--border);
   border-left: 3px solid var(--border);
   border-radius: var(--radius);
