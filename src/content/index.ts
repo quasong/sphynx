@@ -16,7 +16,6 @@ import { supremum } from './analysis/supremum';
 import { foundationEntries } from './foundations';
 import { continuity } from './definitions/continuity';
 import { evenSquare } from './theorems/even-square';
-import { pythagoras } from './theorems/pythagoras';
 import { sqrt2Irrational } from './theorems/sqrt2-irrational';
 
 /** Every entry in the library, in the order the index page presents them. */
@@ -41,7 +40,6 @@ export const entries: readonly Entry[] = [
   banachFixedPoint,
   sqrt2Irrational,
   evenSquare,
-  pythagoras,
   ...foundationEntries,
 ];
 

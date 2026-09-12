@@ -17,7 +17,7 @@ export type Latex = string;
 
 /**
  * A stable, human-readable entry id, namespaced by kind:
- * `thm.pythagoras`, `lem.even-square`, `def.continuity-epsilon-delta`.
+ * `thm.bolzano-weierstrass`, `lem.even-square`, `def.metric-space`.
  */
 export type EntryId = string;
 

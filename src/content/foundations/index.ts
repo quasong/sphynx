@@ -8,32 +8,6 @@ import type { Entry } from '../../types/entry';
  * has honest leaves.
  */
 
-const areaAdditivity: Entry = {
-  id: 'ax.area-additivity',
-  kind: 'axiom',
-  title: 'Area is additive and motion-invariant',
-  statement: String.raw`
-    \text{If } R = R_1 \cup \dots \cup R_n \text{ with pairwise disjoint interiors, then }
-    |R| = \sum_{i=1}^{n} |R_i|,
-    \\[4pt]
-    \text{and } |g(R)| = |R| \text{ for every rigid motion } g.
-  `,
-  informal:
-    'Cutting a region into non-overlapping pieces and adding up their areas gives back the area you started with, and sliding or turning a piece does not change its area. Every dissection proof rests on exactly this.',
-  tags: ['geometry', 'measure'],
-};
-
-const triangleAngleSum: Entry = {
-  id: 'thm.triangle-angle-sum',
-  kind: 'theorem',
-  title: 'Angles of a triangle sum to a straight angle',
-  statement: String.raw`\alpha + \beta + \gamma = \pi`,
-  informal:
-    'The three interior angles of any Euclidean triangle add up to 180°. In a right triangle this forces the two non-right angles to be complementary — they add to 90° — which is the fact the dissection proofs actually use.',
-  tags: ['geometry'],
-  references: [{ label: 'Euclid, Elements I.32' }],
-};
-
 const rational: Entry = {
   id: 'def.rational',
   kind: 'definition',
@@ -60,9 +34,4 @@ const parity: Entry = {
   tags: ['number theory'],
 };
 
-export const foundationEntries: readonly Entry[] = [
-  areaAdditivity,
-  triangleAngleSum,
-  rational,
-  parity,
-];
+export const foundationEntries: readonly Entry[] = [rational, parity];

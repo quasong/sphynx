@@ -6,7 +6,6 @@ import { CauchyCriterionFigure, CauchyFigure } from './CauchyFigure';
 import { CompleteMetricFigure } from './CompleteMetricFigure';
 import { EpsilonDeltaFigure } from './EpsilonDeltaFigure';
 import { ExtremeValueFigure } from './ExtremeValueFigure';
-import { PythagorasFigure } from './PythagorasFigure';
 import { QIncompleteFigure } from './QIncompleteFigure';
 import { IntermediateValueFigure } from './IntermediateValueFigure';
 import { FixedPointFigure } from './FixedPointFigure';
@@ -22,7 +21,6 @@ import { SupremumFigure } from './SupremumFigure';
  * and never import a component, so content and rendering can move separately.
  */
 const FIGURES: Record<string, ComponentType<FigureProps>> = {
-  pythagoras: PythagorasFigure,
   sqrt2: Sqrt2Figure,
   'epsilon-delta': EpsilonDeltaFigure,
   supremum: SupremumFigure,

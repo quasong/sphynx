@@ -72,23 +72,22 @@ custom property that adapts to the light and dark themes.
 
 **Motion is a consequence, not a feature.** A figure re-renders with new
 geometry when the step changes, so transitions are CSS on the elements that
-move. In the Pythagorean figure the four triangles are drawn once, in their
-first-packing positions, and carried to their second-packing positions by rigid
-motions written as SVG transforms — rotations and translations only, no
-reflections, so what the reader sees matches what the proof claims.
+move — nothing animates anything itself.
 
 ## What is in it
 
 The library is organised around the mechanisms that get re-instantiated as the
 mathematics climbs, not around a syllabus. Completeness runs from the gap in ℚ
-to the axiom that fills it and ends by producing the number it began by showing
-is missing. Sequences turn that axiom into something that produces limits.
-Compactness is where closed and bounded stop being a description and start
-doing work — and where the hypotheses become switchable. Continuity is present
-as the ε–δ definition, still waiting on the metric-space material that belongs
-between it and the foundations. The Pythagorean theorem is off that arc; it is
-there because a dissection proof is the clearest demonstration of what the
-figures can do.
+to the axiom that fills it, and ends by producing the number it began by
+showing is missing. Sequences turn that axiom into something that produces
+limits rather than merely promising them. Continuity and compactness are where
+closed and bounded stop being a description and start doing work. Metric spaces
+restate the whole of it with |x − y| replaced by a distance, which is the form
+that carries above ℝ.
+
+Everything is on that arc. An entry that nothing in the reading order reaches,
+and nothing will, does not belong here even if it is good — the index is a
+path, and a disconnected node is not a stop on it.
 
 ## Adding an entry
 
