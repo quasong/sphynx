@@ -75,7 +75,11 @@ export const spine: readonly SpineSection[] = [
     id: 'functions',
     title: 'Sequences of functions',
     blurb:
-      'Convergence one level up, where each term is a function. Asked point by point it lets continuity fall out of the limit; the repair is the quantifier move from uniform continuity, made a second time — and it turns functions into the points of a metric space.',
-    entries: ['def.uniform-convergence', 'thm.uniform-limit-continuous'],
+      'Convergence one level up, where each term is a function. Asked point by point it lets continuity fall out of the limit; the repair is the quantifier move from uniform continuity, made a second time — and it turns functions into the points of a metric space, complete whenever the domain is compact.',
+    entries: [
+      'def.uniform-convergence',
+      'thm.uniform-limit-continuous',
+      'thm.continuous-functions-complete',
+    ],
   },
 ];

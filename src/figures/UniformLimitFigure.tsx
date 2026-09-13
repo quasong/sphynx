@@ -1,7 +1,7 @@
 import type { FigureProps } from '../types/figure';
 import { FigureFrame } from './primitives/Figure';
 import type { Plot } from './primitives/plot';
-import { Axes, Band, Curve, createPlot } from './primitives/plot';
+import { Axes, Band, Curve, Tube, createPlot } from './primitives/plot';
 import { Label, PointMark, Segment } from './primitives/shapes';
 import type { Tone } from './primitives/tone';
 import { fill, stroke } from './primitives/tone';
@@ -163,46 +163,6 @@ function Legs({
       <PointMark at={plot.pt([X0, f(X0)])} tone="accent" radius={3.5} />
       <PointMark at={plot.pt([X, fN(X)])} tone="b" radius={3.5} />
       <PointMark at={plot.pt([X0, fN(X0)])} tone="b" radius={3.5} />
-    </g>
-  );
-}
-
-interface TubeProps {
-  plot: Plot;
-  fn: (x: number) => number;
-  domain: readonly [number, number];
-  half: number;
-  tone: Tone;
-  /** Where fn jumps; the tube is drawn in separate pieces either side. */
-  breaks?: readonly number[];
-}
-
-/** Everything within `half` of the graph of fn, vertically. */
-function Tube({ plot: p, fn, domain, half, tone, breaks = [] }: TubeProps) {
-  const cuts = [domain[0], ...breaks, domain[1]];
-  const pieces: string[] = [];
-  for (let k = 0; k < cuts.length - 1; k += 1) {
-    const lo = cuts[k] as number;
-    // Stop a hair short of a jump so the piece does not take the value past it.
-    const hi = (cuts[k + 1] as number) - (k < cuts.length - 2 ? 1e-6 : 0);
-    const xs = Array.from({ length: 81 }, (_, s) => lo + ((hi - lo) * s) / 80);
-    const top = xs.map((x) => `${p.x(x).toFixed(1)},${p.y(fn(x) + half).toFixed(1)}`);
-    const bottom = xs.reverse().map((x) => `${p.x(x).toFixed(1)},${p.y(fn(x) - half).toFixed(1)}`);
-    pieces.push([...top, ...bottom].join(' '));
-  }
-
-  return (
-    <g>
-      {pieces.map((points, k) => (
-        <polygon
-          key={k}
-          points={points}
-          fill={fill(tone)}
-          stroke={stroke(tone)}
-          strokeWidth={1.25}
-          strokeDasharray="5 4"
-        />
-      ))}
     </g>
   );
 }

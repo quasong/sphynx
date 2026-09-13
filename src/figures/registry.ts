@@ -6,6 +6,7 @@ import { CauchyCriterionFigure, CauchyFigure } from './CauchyFigure';
 import { ClosedSetFigure } from './ClosedSetFigure';
 import { CompactFigure } from './CompactFigure';
 import { CompleteMetricFigure } from './CompleteMetricFigure';
+import { ContinuousCompleteFigure } from './ContinuousCompleteFigure';
 import { EpsilonDeltaFigure } from './EpsilonDeltaFigure';
 import { ExtremeValueFigure } from './ExtremeValueFigure';
 import { QIncompleteFigure } from './QIncompleteFigure';
@@ -46,6 +47,7 @@ const FIGURES: Record<string, ComponentType<FigureProps>> = {
   compact: CompactFigure,
   'uniform-convergence': UniformConvergenceFigure,
   'uniform-limit': UniformLimitFigure,
+  'continuous-complete': ContinuousCompleteFigure,
 };
 
 export function getFigure(id: string | undefined): ComponentType<FigureProps> | undefined {

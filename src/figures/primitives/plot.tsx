@@ -252,6 +252,50 @@ export function Band({ plot, orientation, from, to, tone = 'accent', label, edge
   );
 }
 
+interface TubeProps {
+  plot: Plot;
+  fn: (x: number) => number;
+  domain: readonly [number, number];
+  /** Vertical distance from the graph to either edge. */
+  half: number;
+  tone?: Tone;
+  /** Where fn jumps; the tube is drawn in separate pieces either side. */
+  breaks?: readonly number[];
+}
+
+/**
+ * Everything within `half` of a graph, vertically. The picture of a uniform
+ * estimate, the way a Band is the picture of a pointwise one.
+ */
+export function Tube({ plot, fn, domain, half, tone = 'good', breaks = [] }: TubeProps) {
+  const cuts = [domain[0], ...breaks, domain[1]];
+  const pieces: string[] = [];
+  for (let k = 0; k < cuts.length - 1; k += 1) {
+    const lo = cuts[k] as number;
+    // Stop a hair short of a jump so the piece does not take the value past it.
+    const hi = (cuts[k + 1] as number) - (k < cuts.length - 2 ? 1e-6 : 0);
+    const xs = Array.from({ length: 81 }, (_, s) => lo + ((hi - lo) * s) / 80);
+    const top = xs.map((x) => `${plot.x(x).toFixed(1)},${plot.y(fn(x) + half).toFixed(1)}`);
+    const bottom = xs.reverse().map((x) => `${plot.x(x).toFixed(1)},${plot.y(fn(x) - half).toFixed(1)}`);
+    pieces.push([...top, ...bottom].join(' '));
+  }
+
+  return (
+    <g>
+      {pieces.map((points, k) => (
+        <polygon
+          key={k}
+          points={points}
+          fill={fill(tone)}
+          stroke={stroke(tone)}
+          strokeWidth={1.25}
+          strokeDasharray="5 4"
+        />
+      ))}
+    </g>
+  );
+}
+
 interface LatticeProps {
   plot: Plot;
   /** Inclusive integer bounds to draw dots for. */
