@@ -77,14 +77,16 @@ export const spine: readonly SpineSection[] = [
     id: 'series',
     title: 'Series',
     blurb:
-      'Infinite sums read as limits of running totals — where the terms going to zero is necessary but not sufficient, and the Cauchy tail test is the sequence criterion in disguise. Power series turn the Taylor polynomial into an infinite polynomial; Taylor\'s theorem says what is left over, in one term involving a derivative somewhere in between.',
+      'Infinite sums read as limits of running totals — where the terms going to zero is necessary but not sufficient, and the Cauchy tail test is the sequence criterion in disguise. Power series turn the Taylor polynomial into an infinite polynomial; a single radius separates absolute convergence from divergence; Taylor\'s theorem says what is left over, in one term involving a derivative somewhere in between.',
     entries: [
       'def.series-convergence',
       'thm.series-cauchy-criterion',
       'def.power-series',
+      'thm.radius-of-convergence',
       'thm.taylor-theorem',
     ],
   },
+
   {
     id: 'metric',
     title: 'Metric spaces',

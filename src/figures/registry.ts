@@ -12,8 +12,10 @@ import { EpsilonDeltaFigure } from './EpsilonDeltaFigure';
 import { ContinuousIntegrableFigure, FundamentalCalculusFigure, RiemannFigure } from './IntegralFigure';
 import { MeanValueFigure } from './MeanValueFigure';
 import { PowerSeriesFigure } from './PowerSeriesFigure';
+import { RadiusOfConvergenceFigure } from './RadiusFigure';
 import { SeriesCauchyCriterionFigure, SeriesConvergenceFigure } from './SeriesFigure';
 import { TaylorFigure } from './TaylorFigure';
+
 import { ExtremeValueFigure } from './ExtremeValueFigure';
 import { QIncompleteFigure } from './QIncompleteFigure';
 import { IntermediateValueFigure } from './IntermediateValueFigure';
@@ -63,6 +65,7 @@ const FIGURES: Record<string, ComponentType<FigureProps>> = {
   'series-convergence': SeriesConvergenceFigure,
   'series-cauchy-criterion': SeriesCauchyCriterionFigure,
   'power-series': PowerSeriesFigure,
+  'radius-of-convergence': RadiusOfConvergenceFigure,
   'taylor-theorem': TaylorFigure,
   picard: PicardFigure,
 };

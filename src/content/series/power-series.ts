@@ -75,7 +75,7 @@ export const powerSeries: Entry = {
         claim: String.raw`
           \text{convergence at a fixed } x \text{ says nothing about convergence at another } x
         `,
-        note: 'A power series is a family of series, one per x. Whether they converge can change abruptly — the geometric series converges at |x| = 0.9 and diverges at |x| = 1.1. There is always a radius (possibly 0 or ∞) separating the two regimes; finding it is a separate theorem, not part of the definition.',
+        note: 'A power series is a family of series, one per x. Whether they converge can change abruptly — the geometric series converges at |x| = 0.9 and diverges at |x| = 1.1. There is always a radius (possibly 0 or ∞) separating the two regimes; the next entry proves that for every coefficient sequence.',
         role: 'observation',
         reason: [{ type: 'step', ref: 'geometric' }],
         dependsOn: ['geometric'],
@@ -87,7 +87,7 @@ export const powerSeries: Entry = {
         claim: String.raw`
           \sum_{n=0}^{\infty} c_n (x - a)^n
         `,
-        note: 'The definition names the shape. Convergence is tested by the Cauchy tail criterion at each x; the Taylor theorem in the next entry asks when the power series built from the derivatives of f actually equals f — which is a statement about the remainder, not about the definition alone.',
+        note: 'The definition names the shape. Convergence is tested by the Cauchy tail criterion at each x; the radius theorem then shows those x form an interval around a, and Taylor asks when the series built from derivatives actually equals f.',
         role: 'conclusion',
         reason: [
           { type: 'step', ref: 'pattern' },
