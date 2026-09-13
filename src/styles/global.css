@@ -307,6 +307,17 @@ code {
 .toc {
   position: sticky;
   top: 84px;
+  max-height: calc(100vh - 104px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-right: 8px;
+}
+
+.toc::-webkit-scrollbar {
+  display: none;
 }
 
 .toc h2 {

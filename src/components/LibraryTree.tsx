@@ -24,6 +24,8 @@ interface LibraryTreeProps {
   unplaced: readonly Entry[];
   /** Called as the reader scrolls, so the table of contents can follow along. */
   onVisibleNode?(id: EntryId | null): void;
+  /** Called when a relation points to an entry hidden by the current filter. */
+  onNavigateToEntry?(id: EntryId): void;
 }
 
 /**
@@ -36,7 +38,7 @@ interface LibraryTreeProps {
  * under the pointer, which turns "what connects to what" into something you ask
  * about one node at a time.
  */
-export function LibraryTree({ sections, unplaced, onVisibleNode }: LibraryTreeProps) {
+export function LibraryTree({ sections, unplaced, onVisibleNode, onNavigateToEntry }: LibraryTreeProps) {
   const [active, setActive] = useState<EntryId | null>(null);
   const [focus, setFocus] = useState<Focus | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -222,7 +224,12 @@ export function LibraryTree({ sections, unplaced, onVisibleNode }: LibraryTreePr
           stay readable at any distance, and clicking one goes there - which is
           what the line was gesturing at anyway. */}
       {active && focus ? (
-        <RelationPanel focus={focus} from={active} nodes={nodeRefs.current} />
+        <RelationPanel
+          focus={focus}
+          from={active}
+          nodes={nodeRefs.current}
+          onNavigateToEntry={onNavigateToEntry}
+        />
       ) : null}
     </div>
   );
@@ -264,6 +271,7 @@ interface RelationPanelProps {
   focus: Focus;
   from: EntryId;
   nodes: Map<EntryId, HTMLElement>;
+  onNavigateToEntry?(id: EntryId): void;
 }
 
 /**
@@ -273,10 +281,15 @@ interface RelationPanelProps {
  * it here would only cover it. The arrow says which way the reader would have
  * to scroll, and clicking takes them there.
  */
-function RelationPanel({ focus, from, nodes }: RelationPanelProps) {
+function RelationPanel({ focus, from, nodes, onNavigateToEntry }: RelationPanelProps) {
   const jump = (id: EntryId) => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    nodes.get(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+    const target = nodes.get(id) ?? document.querySelector<HTMLElement>(`[data-entry="${CSS.escape(id)}"]`);
+    if (target) {
+      target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+      return;
+    }
+    onNavigateToEntry?.(id);
   };
 
   const direction = (id: EntryId): string => {

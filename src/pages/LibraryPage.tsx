@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LibraryTree } from '../components/LibraryTree';
 import { TableOfContents } from '../components/TableOfContents';
@@ -11,11 +11,37 @@ export function LibraryPage() {
   const tree = useMemo(() => buildTree(), []);
   const [current, setCurrent] = useState<EntryId | null>(null);
   const [query, setQuery] = useState('');
+  const [pendingEntry, setPendingEntry] = useState<EntryId | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const firstEntry = spine[0]?.entries[0] ?? 'thm.sqrt2-irrational';
   const guidedCount = entries.filter((entry) => entry.timeline).length;
   const filtered = useMemo(() => filterTree(tree, query), [tree, query]);
   const resultCount = query.trim() ? countEntries(filtered) : entries.length;
+
+  const scrollToEntry = useCallback((id: EntryId) => {
+    const target = document.querySelector<HTMLElement>(`[data-entry="${CSS.escape(id)}"]`);
+    if (!target) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+  }, []);
+
+  const navigateToEntry = useCallback((id: EntryId) => {
+    if (query.trim()) {
+      setPendingEntry(id);
+      setQuery('');
+    } else {
+      scrollToEntry(id);
+    }
+  }, [query, scrollToEntry]);
+
+  useEffect(() => {
+    if (!pendingEntry || query.trim()) return undefined;
+    const frame = requestAnimationFrame(() => {
+      scrollToEntry(pendingEntry);
+      setPendingEntry(null);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [pendingEntry, query, scrollToEntry]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -78,6 +104,7 @@ export function LibraryPage() {
             sections={filtered.sections}
             unplaced={filtered.unplaced}
             onVisibleNode={setCurrent}
+            onNavigateToEntry={navigateToEntry}
           />
         </div>
       )}
