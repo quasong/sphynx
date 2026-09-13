@@ -73,10 +73,34 @@ export function StepList({
     const ceiling = scrollCeiling?.() ?? Number.POSITIVE_INFINITY;
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    window.scrollTo({
-      top: Math.max(0, Math.min(centred, ceiling)),
-      behavior: still ? 'auto' : 'smooth',
-    });
+    // A browser's native smooth scroll cannot be retargeted gracefully: a
+    // quick second click interrupts the first animation and the page appears
+    // to lurch. Keep the animation here so its previous frame can be cancelled
+    // cleanly whenever the selected step changes again.
+    const target = Math.max(0, Math.min(centred, ceiling));
+    if (still || Math.abs(target - window.scrollY) < 1) {
+      window.scrollTo({ top: target, behavior: 'auto' });
+      return undefined;
+    }
+
+    const start = window.scrollY;
+    const distance = target - start;
+    const duration = Math.min(680, Math.max(280, 280 + Math.abs(distance) * 0.25));
+    let began = 0;
+    let frame = 0;
+
+    const tick = (now: number) => {
+      if (!began) began = now;
+      const progress = Math.min(1, (now - began) / duration);
+      // Ease out quickly, then settle gently into the target instead of
+      // stopping with the browser's abrupt native-scroll finish.
+      const eased = 1 - (1 - progress) ** 3;
+      window.scrollTo({ top: start + distance * eased, behavior: 'auto' });
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
   }, [selected, scrollCeiling]);
 
   return (
