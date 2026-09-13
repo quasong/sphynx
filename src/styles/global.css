@@ -230,6 +230,71 @@ code {
   font-size: 13px;
 }
 
+.library__search {
+  display: grid;
+  gap: 6px;
+  max-width: 420px;
+  margin-top: 24px;
+}
+
+.library__search label,
+.toc__mobile-label {
+  color: var(--text-faint);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.library__search-input {
+  position: relative;
+}
+
+.library__search input,
+.toc__mobile-select {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 42px 8px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.library__search input::placeholder {
+  color: var(--text-faint);
+}
+
+.library__search kbd {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-faint);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.library__search-status {
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.library__empty {
+  max-width: 560px;
+  margin: 28px 0;
+  padding: 20px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text-dim);
+}
+
 .library__body {
   display: grid;
   grid-template-columns: 210px minmax(0, 1fr);
@@ -252,6 +317,11 @@ code {
   text-transform: uppercase;
   color: var(--text-faint);
   margin: 0 0 14px;
+}
+
+.toc__mobile-label,
+.toc__mobile-select {
+  display: none;
 }
 
 .toc__section {
@@ -1291,7 +1361,29 @@ code {
   }
 
   .toc {
+    position: sticky;
+    top: var(--topbar-h);
+    z-index: 10;
+    display: block;
+    margin: -36px -32px 20px;
+    padding: 10px 32px;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter: blur(10px);
+  }
+
+  .toc h2,
+  .toc__section {
     display: none;
+  }
+
+  .toc__mobile-label,
+  .toc__mobile-select {
+    display: block;
+  }
+
+  .toc__mobile-label {
+    margin-bottom: 5px;
   }
 }
 
@@ -1328,6 +1420,12 @@ code {
 
   .topbar {
     padding: 14px 20px;
+  }
+
+  .toc {
+    margin: -24px -20px 20px;
+    padding-right: 20px;
+    padding-left: 20px;
   }
 
   .entry {

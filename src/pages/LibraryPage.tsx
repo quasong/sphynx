@@ -1,17 +1,33 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LibraryTree } from '../components/LibraryTree';
 import { TableOfContents } from '../components/TableOfContents';
-import { entries } from '../content';
+import { entries, KIND_LABEL } from '../content';
 import { spine } from '../content/spine';
 import { buildTree } from '../lib/tree';
-import type { EntryId } from '../types/entry';
+import type { Entry, EntryId } from '../types/entry';
 
 export function LibraryPage() {
   const tree = useMemo(() => buildTree(), []);
   const [current, setCurrent] = useState<EntryId | null>(null);
+  const [query, setQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
   const firstEntry = spine[0]?.entries[0] ?? 'thm.sqrt2-irrational';
   const guidedCount = entries.filter((entry) => entry.timeline).length;
+  const filtered = useMemo(() => filterTree(tree, query), [tree, query]);
+  const resultCount = query.trim() ? countEntries(filtered) : entries.length;
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (event.key === '/' && target && !/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) && !target.isContentEditable) {
+        event.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   return (
     <main className="page library">
@@ -29,16 +45,69 @@ export function LibraryPage() {
           </Link>
           <span className="library__count">{entries.length} entries · {guidedCount} guided arguments</span>
         </div>
+        <div className="library__search">
+          <label htmlFor="library-search">Find an entry</label>
+          <div className="library__search-input">
+            <input
+              ref={searchRef}
+              id="library-search"
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search titles, topics or kinds"
+              autoComplete="off"
+            />
+            <kbd>/</kbd>
+          </div>
+          {query.trim() ? (
+            <span className="library__search-status" role="status">
+              {resultCount} matching {query.trim()}
+            </span>
+          ) : null}
+        </div>
       </header>
 
-      <div className="library__body">
-        <TableOfContents sections={tree.sections} current={current} />
-        <LibraryTree
-          sections={tree.sections}
-          unplaced={tree.unplaced}
-          onVisibleNode={setCurrent}
-        />
-      </div>
+      {query.trim() && resultCount === 0 ? (
+        <p className="library__empty" role="status">
+          No entries match “{query.trim()}”. Try a theorem name, topic, or kind.
+        </p>
+      ) : (
+        <div className="library__body">
+          <TableOfContents sections={filtered.sections} current={current} />
+          <LibraryTree
+            sections={filtered.sections}
+            unplaced={filtered.unplaced}
+            onVisibleNode={setCurrent}
+          />
+        </div>
+      )}
     </main>
+  );
+}
+
+function filterTree(tree: ReturnType<typeof buildTree>, query: string): ReturnType<typeof buildTree> {
+  const needle = query.trim().toLocaleLowerCase();
+  if (!needle) return tree;
+
+  const matches = (entry: Entry) =>
+    [entry.title, KIND_LABEL[entry.kind], ...entry.tags].join(' ').toLocaleLowerCase().includes(needle);
+
+  return {
+    sections: tree.sections
+      .map((section) => ({
+        ...section,
+        nodes: section.nodes
+          .map((node) => ({ ...node, branches: node.branches.filter(matches) }))
+          .filter((node) => matches(node.entry) || node.branches.length > 0),
+      }))
+      .filter((section) => section.nodes.length > 0),
+    unplaced: tree.unplaced.filter(matches),
+  };
+}
+
+function countEntries(tree: ReturnType<typeof buildTree>): number {
+  return tree.sections.reduce(
+    (total, section) => total + section.nodes.reduce((count, node) => count + 1 + node.branches.length, 0),
+    tree.unplaced.length,
   );
 }

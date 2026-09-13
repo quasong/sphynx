@@ -30,6 +30,27 @@ export function TableOfContents({ sections, current }: TableOfContentsProps) {
   return (
     <nav className="toc" aria-label="Contents">
       <h2>Contents</h2>
+      <label className="toc__mobile-label" htmlFor="toc-mobile">Jump to an entry</label>
+      <select
+        className="toc__mobile-select"
+        id="toc-mobile"
+        defaultValue=""
+        onChange={(event) => {
+          if (event.target.value) jump(event.target.value);
+        }}
+      >
+        <option value="">Jump to an entry…</option>
+        {sections.map((section) => (
+          <optgroup key={section.id} label={section.title}>
+            {section.nodes.flatMap((node) => [
+              <option key={node.entry.id} value={node.entry.id}>{node.entry.title}</option>,
+              ...node.branches.map((branch) => (
+                <option key={branch.id} value={branch.id}>↳ {branch.title}</option>
+              )),
+            ])}
+          </optgroup>
+        ))}
+      </select>
       {sections.map((section) => (
         <div className="toc__section" key={section.id}>
           <p className="toc__section-title">{section.title}</p>
