@@ -11,7 +11,7 @@ export const arzelaAscoli: Entry = {
   kind: 'theorem',
   title: 'Arzelà–Ascoli',
   statement: String.raw`
-    K \subset \mathbb{R} \text{ compact}, \; K \neq \varnothing, \quad
+    K = [a,b] \subset \mathbb{R}, \; a < b, \quad
     (f_n) \subset C(K)
     \\[4pt]
     \bigl\{ f_n : n \in \mathbb{N} \bigr\} \text{ equicontinuous and pointwise bounded}
@@ -20,7 +20,7 @@ export const arzelaAscoli: Entry = {
     \text{ for some } f \in C(K)
   `,
   informal:
-    'A sequence of continuous functions on a compact set that stays equicontinuous and does not blow up at any point has a subsequence whose graphs settle into a tube around a continuous limit. It is Bolzano–Weierstrass for functions: the shared δ upgrades convergence on a dense countable set into uniform Cauchy, and completeness of C(K) finishes the job.',
+    'A sequence of continuous functions on a compact interval that stays equicontinuous and does not blow up at any point has a subsequence whose graphs settle into a tube around a continuous limit. It is Bolzano–Weierstrass for functions: the shared δ upgrades convergence on a dense countable set into uniform Cauchy, and completeness of C(K) finishes the job.',
   tags: ['analysis', 'sequences of functions', 'compactness'],
   figureId: 'arzela-ascoli',
   hypotheses: [
@@ -67,7 +67,7 @@ export const arzelaAscoli: Entry = {
   timeline: {
     kind: 'proof',
     strategy: 'construction',
-    given: [String.raw`K \subset \mathbb{R} \text{ compact}, \; K \neq \varnothing`, String.raw`(f_n) \subset C(K)`],
+    given: [String.raw`a < b, \quad K=[a,b]`, String.raw`(f_n) \subset C(K)`],
     steps: [
       {
         id: 'dense',
@@ -76,11 +76,11 @@ export const arzelaAscoli: Entry = {
           D = \{ q_1, q_2, q_3, \ldots \} \subset K,
           \qquad \overline{D} = K
         `,
-        note: 'On a compact interval the rationals in K will do; in general a compact metric space is separable. The subsequence will be built to converge on D first, then equicontinuity will spread that convergence to the whole of K.',
+        note: 'The rationals in [a,b] give a countable dense set. The subsequence will be built to converge on D first, then equicontinuity will spread that convergence to the whole interval. Restricting the statement to an interval keeps this construction inside the results proved in the library; a general compact metric space needs a separate separability lemma.',
         role: 'construction',
         reason: [
           { type: 'cite', ref: 'def.compact' },
-          { type: 'cite', ref: 'thm.archimedean-density', note: 'ℚ is dense in ℝ, so ℚ ∩ K is dense in K when K is an interval' },
+          { type: 'cite', ref: 'thm.archimedean-density', note: 'ℚ is dense in ℝ, so ℚ ∩ [a,b] is dense in the interval' },
         ],
         highlight: ['dense'],
       },

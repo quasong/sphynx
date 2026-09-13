@@ -99,12 +99,12 @@ restate the whole of it with |x − y| replaced by a distance, which is the form
 that carries above ℝ — all of it except closed and bounded, which has to be
 replaced by the move it was being used for. Sequences of functions make the
 continuous functions on a compact set into a complete metric space of their
-own, and the arc ends where it was going: a differential equation, rewritten so
-that its unknown is a point of that space, is solved by the fixed point theorem.
-The calculus section supplies the integral equation that connects the function
-space to that differential equation. There are currently 32 entries, 29 with
-timelines; the remaining entries are the completeness axiom and two elementary
-definitions.
+own. Arzelà–Ascoli is the compactness theorem for equicontinuous families.
+The arc ends where it was going: a differential equation, rewritten so that
+its unknown is a point of that space, is solved by the fixed point theorem;
+Grönwall's inequality then turns the same integral estimates into a stability
+bound. There are currently 40 entries, 37 with timelines; the remaining entries
+are the completeness axiom and two elementary definitions.
 
 Everything is on that arc. An entry that nothing in the reading order reaches,
 and nothing will, does not belong here even if it is good — the index is a

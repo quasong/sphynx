@@ -10,7 +10,9 @@ export const taylorTheorem: Entry = {
   kind: 'theorem',
   title: "Taylor's theorem",
   statement: String.raw`
-    f : [a, b] \to \mathbb{R}, \quad f^{(n+1)} \text{ exists on } (a, b),
+    f : [a, b] \to \mathbb{R} \text{ continuous}, \quad
+    f^{(k)} \text{ continuous on } [a,b] \ (1 \le k \le n), \quad
+    f^{(n+1)} \text{ exists on } (a, b),
     \\[4pt]
     f(b) = \sum_{k=0}^{n} \frac{f^{(k)}(a)}{k!}(b-a)^k
     + \frac{f^{(n+1)}(c)}{(n+1)!}(b-a)^{n+1}
@@ -23,9 +25,9 @@ export const taylorTheorem: Entry = {
   hypotheses: [
     {
       id: 'derivatives',
-      label: 'f^{(n+1)} exists on (a, b)',
-      statement: String.raw`f^{(n+1)}(x) \text{ exists for every } x \in (a, b)`,
-      note: 'Each application of Rolle needs the next derivative to exist on the open interval. Without it the auxiliary function cannot be built to order n + 1.',
+      label: 'intermediate derivatives are continuous; next derivative exists inside',
+      statement: String.raw`f^{(k)} \text{ is continuous on } [a,b] \ (1 \le k \le n), \quad f^{(n+1)}(x) \text{ exists for } x \in (a,b)`,
+      note: 'Each repeated application of Rolle needs the current derivative to be continuous on its closed subinterval and the next derivative to exist inside. For n = 0 the first clause is empty and this is exactly the mean value theorem hypothesis.',
       withoutIt: {
         summary: 'A corner blocks the next derivative.',
         statement: String.raw`
@@ -76,13 +78,14 @@ export const taylorTheorem: Entry = {
         title: 'Build an auxiliary function that vanishes at both ends',
         claim: String.raw`
           \varphi(x) = R_n(x) - \frac{R_n(b)}{(b-a)^{n+1}}(x-a)^{n+1},
-          \qquad \varphi(a) = \varphi(b) = 0
+          \qquad \varphi^{(k)}(a)=0 \ (0 \le k \le n), \quad \varphi(b)=0
         `,
-        note: 'Subtract a multiple of (x − a)^{n+1} so that φ vanishes at a — which R_n already does through its first n derivatives — and also at b, because the coefficient was chosen to cancel R_n(b) there.',
+        note: 'Subtract a multiple of (x − a)^{n+1}. The remainder and its first n derivatives vanish at a, so φ does too through order n; the coefficient cancels R_n(b) at b.',
         role: 'construction',
         reason: [
           { type: 'step', ref: 'polynomial' },
-          { type: 'algebra', note: 'Evaluate at a and b; the first n derivatives of R_n vanish at a.' },
+          { type: 'hypothesis', ref: 'derivatives' },
+          { type: 'algebra', note: 'Evaluate derivatives at a and the function at b.' },
         ],
         dependsOn: ['polynomial'],
         highlight: ['auxiliary'],
@@ -91,13 +94,11 @@ export const taylorTheorem: Entry = {
         id: 'rolle',
         title: 'Apply Rolle repeatedly to peel off powers',
         claim: String.raw`
-          \varphi(a) = \varphi(b) = 0
+          \varphi^{(k)}(a)=0 \ (0 \le k \le n), \quad \varphi(b)=0
           \;\Longrightarrow\;
-          \exists\, c_1 \in (a,b) : \varphi'(c_1) = 0,
-          \quad \ldots, \quad
-          \exists\, c_n \in (a,b) : \varphi^{(n)}(c_n) = 0
+          \exists\, \xi \in (a,b) : \varphi^{(n+1)}(\xi)=0
         `,
-        note: 'Each derivative of φ is built from lower derivatives of f, so it exists on (a, b). Rolle applied once gives a zero of φ′; applied n times more gives a zero of φ^{(n)}. When n = 0 this step is empty and the next step is the mean value theorem directly.',
+        note: 'Rolle gives a zero of φ′ between a and b. Since φ′ is also zero at a, apply Rolle on [a,c₁] to get a zero of φ″; repeat. After n + 1 applications, the final zero is φ^(n+1)(ξ). When n = 0 this is one direct application of Rolle.',
         role: 'derivation',
         reason: [
           { type: 'hypothesis', ref: 'derivatives' },
@@ -112,16 +113,17 @@ export const taylorTheorem: Entry = {
         id: 'nth',
         title: 'At the last zero, read off the remainder',
         claim: String.raw`
-          \varphi^{(n+1)}(x) = R_n^{(n+1)}(x) - \frac{(n+1)!}{(b-a)^{n+1}} R_n(b),
-          \qquad \varphi^{(n)}(c) = 0
+          \varphi^{(n+1)}(x) = f^{(n+1)}(x) - \frac{(n+1)!}{(b-a)^{n+1}} R_n(b),
+          \qquad \varphi^{(n+1)}(\xi)=0
           \;\Longrightarrow\;
           R_n(b) = \frac{f^{(n+1)}(\xi)}{(n+1)!}(b-a)^{n+1}
         `,
-        note: 'P_n is a polynomial of degree n, so R_n^{(n+1)} = f^{(n+1)}. Differentiating φ n + 1 times kills the polynomial part entirely. Evaluating φ^{(n)} at the point c_n from Rolle and solving for R_n(b) gives the Lagrange form — one value of the (n + 1)st derivative, somewhere in (a, b).',
+        note: 'P_n is a polynomial of degree n, so its (n + 1)st derivative vanishes. Differentiating φ n + 1 times and evaluating at the zero ξ supplied by repeated Rolle gives the Lagrange remainder.',
         role: 'derivation',
         reason: [
           { type: 'step', ref: 'rolle' },
-          { type: 'algebra', note: 'Differentiate φ and solve for R_n(b) at the zero of φ^{(n)}.' },
+          { type: 'hypothesis', ref: 'derivatives' },
+          { type: 'algebra', note: 'Differentiate φ and solve at ξ.' },
         ],
         dependsOn: ['rolle'],
         highlight: ['remainder'],
@@ -132,7 +134,7 @@ export const taylorTheorem: Entry = {
         claim: String.raw`
           f(b) = P_n(b) + R_n(b)
           = \sum_{k=0}^{n} \frac{f^{(k)}(a)}{k!}(b-a)^k
-          + \frac{f^{(n+1)}(c)}{(n+1)!}(b-a)^{n+1}
+          + \frac{f^{(n+1)}(\xi)}{(n+1)!}(b-a)^{n+1}
         `,
         note: 'The remainder controls how far the Taylor polynomial misses f. If f^{(n+1)} is bounded on [a, b], the remainder shrinks like (b − a)^{n+1} as the interval narrows — which is why taking more terms improves the approximation, and why the power series converges when the remainders vanish.',
         role: 'conclusion',

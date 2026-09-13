@@ -16,6 +16,7 @@ import { PowerSeriesFigure } from './PowerSeriesFigure';
 import { RadiusOfConvergenceFigure } from './RadiusFigure';
 import { SeriesCauchyCriterionFigure, SeriesConvergenceFigure } from './SeriesFigure';
 import { TaylorFigure } from './TaylorFigure';
+import { GronwallFigure } from './GronwallFigure';
 
 import { ExtremeValueFigure } from './ExtremeValueFigure';
 import { QIncompleteFigure } from './QIncompleteFigure';
@@ -71,6 +72,7 @@ const FIGURES: Record<string, ComponentType<FigureProps>> = {
   'radius-of-convergence': RadiusOfConvergenceFigure,
   'taylor-theorem': TaylorFigure,
   picard: PicardFigure,
+  gronwall: GronwallFigure,
 };
 
 export function getFigure(id: string | undefined): ComponentType<FigureProps> | undefined {

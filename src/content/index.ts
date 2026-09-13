@@ -27,6 +27,7 @@ import {
 } from './series';
 
 import { picardLindelof } from './ode/picard-lindelof';
+import { gronwall } from './ode/gronwall';
 import { completeMetricSpace, metricSpace } from './metric/metric-space';
 import { monotoneConvergence } from './analysis/monotone-convergence';
 import { sequenceLimit } from './analysis/sequence-limit';
@@ -77,6 +78,7 @@ export const entries: readonly Entry[] = [
   equicontinuity,
   arzelaAscoli,
   picardLindelof,
+  gronwall,
   sqrt2Irrational,
   evenSquare,
   ...foundationEntries,
