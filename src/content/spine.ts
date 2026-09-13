@@ -63,7 +63,12 @@ export const spine: readonly SpineSection[] = [
     id: 'metric',
     title: 'Metric spaces',
     blurb:
-      'The same definitions with |x − y| replaced by a distance, which costs nothing and buys everything above ℝ — including a theorem that produces its own answer rather than asserting one exists.',
-    entries: ['def.metric-space', 'def.complete-metric-space', 'thm.banach-fixed-point'],
+      'The same definitions with |x − y| replaced by a distance, which costs nothing and buys everything above ℝ. Closed and bounded is the one description that does not survive the trip, and what replaces it is the move it was being used for. Ends with a theorem that produces its own answer rather than asserting one exists.',
+    entries: [
+      'def.metric-space',
+      'def.complete-metric-space',
+      'def.compact',
+      'thm.banach-fixed-point',
+    ],
   },
 ];

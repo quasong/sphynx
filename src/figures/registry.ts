@@ -4,6 +4,7 @@ import { ArchimedeanFigure } from './ArchimedeanFigure';
 import { BisectionFigure } from './BisectionFigure';
 import { CauchyCriterionFigure, CauchyFigure } from './CauchyFigure';
 import { ClosedSetFigure } from './ClosedSetFigure';
+import { CompactFigure } from './CompactFigure';
 import { CompleteMetricFigure } from './CompleteMetricFigure';
 import { EpsilonDeltaFigure } from './EpsilonDeltaFigure';
 import { ExtremeValueFigure } from './ExtremeValueFigure';
@@ -40,6 +41,7 @@ const FIGURES: Record<string, ComponentType<FigureProps>> = {
   'complete-metric': CompleteMetricFigure,
   'fixed-point': FixedPointFigure,
   'closed-set': ClosedSetFigure,
+  compact: CompactFigure,
 };
 
 export function getFigure(id: string | undefined): ComponentType<FigureProps> | undefined {

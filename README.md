@@ -84,7 +84,8 @@ showing is missing. Sequences turn that axiom into something that produces
 limits rather than merely promising them. Continuity and compactness are where
 closed and bounded stop being a description and start doing work. Metric spaces
 restate the whole of it with |x − y| replaced by a distance, which is the form
-that carries above ℝ.
+that carries above ℝ — all of it except closed and bounded, which has to be
+replaced by the move it was being used for.
 
 Everything is on that arc. An entry that nothing in the reading order reaches,
 and nothing will, does not belong here even if it is good — the index is a
