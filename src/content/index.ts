@@ -9,6 +9,7 @@ import { intermediateValue } from './analysis/intermediate-value';
 import { banachFixedPoint } from './metric/banach-fixed-point';
 import { compact } from './metric/compact';
 import { uniformConvergence } from './functions/uniform-convergence';
+import { uniformLimit } from './functions/uniform-limit';
 import { completeMetricSpace, metricSpace } from './metric/metric-space';
 import { monotoneConvergence } from './analysis/monotone-convergence';
 import { sequenceLimit } from './analysis/sequence-limit';
@@ -44,6 +45,7 @@ export const entries: readonly Entry[] = [
   compact,
   banachFixedPoint,
   uniformConvergence,
+  uniformLimit,
   sqrt2Irrational,
   evenSquare,
   ...foundationEntries,
