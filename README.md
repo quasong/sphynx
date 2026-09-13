@@ -38,12 +38,14 @@ order.
 
 **Hypotheses are switchable.** A theorem names its conditions, its steps cite
 them by name, and the reader can switch one off. The figure then draws the
-counterexample instead of the theorem, and the steps that stop working are
+counterexample instead of the theorem, and the steps that lose their justification are
 marked — including the ones that never mentioned the condition but rest on a
 step that did. This is the one thing the medium does that a printed proof
 cannot, so entries whose conditions carry weight should be written this way.
 One condition at a time, deliberately: each counterexample satisfies all the
 others, which is what makes it evidence about that condition alone.
+An affected step is marked "not guaranteed": it may still happen to be true
+for the displayed counterexample, even though this proof no longer establishes it.
 
 **Timelines.** An entry's explanation is an ordered list of steps. For a theorem
 that list is a proof; for a definition it is the sequence of attempts and
@@ -55,9 +57,11 @@ is one renderer rather than two.
 A hand-written dependency list drifts out of sync with the proof the moment a
 step is edited. `findContentProblems` fails loudly in development when a step
 cites an entry, step or hypothesis that does not exist, when a hypothesis is
-stated but never used, or when citations form a cycle. `npm run check` runs the
-same checks in Node, and `npm run build` runs it before bundling, so a content
-bug cannot ship.
+stated but never used, when ids repeat, or when citations form a cycle. Local
+step dependencies must point backwards, whether named in `reason` or `dependsOn`.
+`npm run check` also validates the spine, figure registrations and every formula
+with KaTeX. `npm run build` runs these checks before bundling. They catch
+structural and rendering errors; mathematical correctness still needs review.
 
 **The step index is the only state.** Selecting step *n* highlights its formula,
 moves the figure to its *n*-th configuration, and surfaces the entries that step
@@ -85,18 +89,22 @@ mathematics climbs, not around a syllabus. Completeness runs from the gap in ℚ
 to the axiom that fills it, and ends by producing the number it began by
 showing is missing. Sequences turn that axiom into something that produces
 limits rather than merely promising them. Continuity and compactness are where
-closed and bounded stop being a description and start doing work. Metric spaces
+closed and bounded stop being a description and start doing work. Differentiation
+uses the extreme value theorem to find a tangent parallel to a chord. Integration
+traps area between Darboux sums; uniform continuity makes those sums meet for
+continuous functions. The fundamental theorem then proves that integration and
+differentiation undo each other, with continuity on the closed interval and
+derivatives in its interior. Metric spaces
 restate the whole of it with |x − y| replaced by a distance, which is the form
 that carries above ℝ — all of it except closed and bounded, which has to be
 replaced by the move it was being used for. Sequences of functions make the
 continuous functions on a compact set into a complete metric space of their
 own, and the arc ends where it was going: a differential equation, rewritten so
 that its unknown is a point of that space, is solved by the fixed point theorem.
-Every theorem above it is spent there exactly once. The one thing it needs that
-the library does not yet prove — the fundamental theorem of calculus, for
-continuous integrands — sits on the trunk stated without proof, the way the
-completeness axiom does, so that an integration section can be added later
-without anything that cites it changing.
+The calculus section supplies the integral equation that connects the function
+space to that differential equation. There are currently 32 entries, 29 with
+timelines; the remaining entries are the completeness axiom and two elementary
+definitions.
 
 Everything is on that arc. An entry that nothing in the reading order reaches,
 and nothing will, does not belong here even if it is good — the index is a
@@ -113,6 +121,36 @@ path, and a disconnected node is not a stop on it.
    it as a statement-only stub — the console will tell you about any that are
    missing.
 
+## Verification
+
+```bash
+npm test
+npm run build
+```
+
+Tests use Node's built-in test runner and the existing esbuild dependency.
+They exercise tree placement, failure propagation, URL bounds and parameter
+preservation, invalid content, all figure steps and single-hypothesis states,
+and the numerical bounds behind the integration drawings. CI runs the tests
+and production build on pushes and pull requests.
+
+For visual review, start `npm run dev` and open
+`/gallery.html?fig=mean-value`. The gallery derives real step ids, highlights
+and hypothesis combinations from the content. Choose an entry in the selector;
+optionally filter zero-based steps with `&steps=0,2,4` or counterexamples with
+`&drop=differentiable` (`&drop=` shows only the intact theorem). The layout is
+responsive and follows the system light/dark theme. The gallery is a development
+entry point and is not included in the production build.
+
+Before shipping content, inspect the new figures in both themes and on a narrow
+viewport. On an entry page, verify stepping, browser Back/Forward, a reloaded
+`?step=…&drop=…` link, switching and restoring hypotheses, and following a citation.
+SVG render checks detect invalid geometry, but cannot detect overlapping labels
+or establish that a drawing conveys the right mathematical idea.
+
+The entry page and figures load on demand. KaTeX is a separate shared chunk so
+content edits do not invalidate the math renderer's cache.
+
 ## Layout
 
 ```
@@ -121,5 +159,6 @@ src/content/    The library itself, plus the derived dependency graph
 src/figures/    One component per figure, over a shared set of SVG primitives
 src/components/ Steps, citations, KaTeX rendering
 src/pages/      The library index and the entry page
-scripts/        The content check, run by `npm run check` and before every build
+scripts/        Content/presentation checks and the Node test runner
+tests/          Content, navigation, dependency and figure regression checks
 ```

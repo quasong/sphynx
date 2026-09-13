@@ -1,0 +1,7 @@
+.gallery { padding: 24px; }
+.gallery h1 { margin-top: 0; }
+.gallery__controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 24px; font-family: var(--sans); }
+.gallery__controls select { max-width: 100%; }
+.gallery__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 430px), 1fr)); gap: 24px; }
+.gallery__cell { min-width: 0; }
+.gallery__cell h2, .gallery__cell > p { font: 13px var(--sans); margin: 0 0 8px; }

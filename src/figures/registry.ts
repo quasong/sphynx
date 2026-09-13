@@ -7,7 +7,10 @@ import { ClosedSetFigure } from './ClosedSetFigure';
 import { CompactFigure } from './CompactFigure';
 import { CompleteMetricFigure } from './CompleteMetricFigure';
 import { ContinuousCompleteFigure } from './ContinuousCompleteFigure';
+import { DerivativeFigure } from './DerivativeFigure';
 import { EpsilonDeltaFigure } from './EpsilonDeltaFigure';
+import { ContinuousIntegrableFigure, FundamentalCalculusFigure, RiemannFigure } from './IntegralFigure';
+import { MeanValueFigure } from './MeanValueFigure';
 import { ExtremeValueFigure } from './ExtremeValueFigure';
 import { QIncompleteFigure } from './QIncompleteFigure';
 import { IntermediateValueFigure } from './IntermediateValueFigure';
@@ -49,6 +52,11 @@ const FIGURES: Record<string, ComponentType<FigureProps>> = {
   'uniform-convergence': UniformConvergenceFigure,
   'uniform-limit': UniformLimitFigure,
   'continuous-complete': ContinuousCompleteFigure,
+  derivative: DerivativeFigure,
+  'mean-value': MeanValueFigure,
+  'riemann-integral': RiemannFigure,
+  'continuous-integrable': ContinuousIntegrableFigure,
+  'fundamental-calculus': FundamentalCalculusFigure,
   picard: PicardFigure,
 };
 

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { clampStep, parseStep, STATEMENT, stepParams } from '../lib/stepUrl';
 
-/** Index used when the reader is on the statement rather than inside the argument. */
-export const STATEMENT = -1;
+export { STATEMENT } from '../lib/stepUrl';
 
 export interface StepState {
   /** Current step index, or STATEMENT. */
@@ -12,12 +12,6 @@ export interface StepState {
   previous(): void;
   atStart: boolean;
   atEnd: boolean;
-}
-
-/** The query parameter is 1-based because readers see it; the index is 0-based. */
-function parseStep(params: URLSearchParams, stepCount: number): number {
-  const raw = Number(params.get('step'));
-  return Number.isInteger(raw) && raw >= 1 && raw <= stepCount ? raw - 1 : STATEMENT;
 }
 
 /**
@@ -48,17 +42,10 @@ export function useStepState(stepCount: number): StepState {
 
   const goTo = useCallback(
     (target: number) => {
-      const clamped = Math.min(Math.max(target, STATEMENT), stepCount - 1);
+      const clamped = clampStep(target, stepCount);
+      if (clamped === pending.current) return;
       pending.current = clamped;
-      setParams(
-        (prev) => {
-          const copy = new URLSearchParams(prev);
-          if (clamped === STATEMENT) copy.delete('step');
-          else copy.set('step', String(clamped + 1));
-          return copy;
-        },
-        { replace: true },
-      );
+      setParams((prev) => stepParams(prev, clamped, stepCount));
     },
     [setParams, stepCount],
   );
@@ -72,7 +59,7 @@ export function useStepState(stepCount: number): StepState {
     function onKeyDown(event: KeyboardEvent) {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       const target = event.target as HTMLElement | null;
-      if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+      if (target && (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.isContentEditable)) return;
 
       switch (event.key) {
         case 'ArrowRight':

@@ -21,7 +21,7 @@ if (!root) throw new Error('Missing #root element');
 // where there is no server to rewrite paths onto index.html.
 createRoot(root).render(
   <StrictMode>
-    <HashRouter>
+    <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <App />
     </HashRouter>
   </StrictMode>,

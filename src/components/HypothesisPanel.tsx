@@ -79,8 +79,9 @@ export function HypothesisBreakdown({ entry, dropped, onRestore }: BreakdownProp
       ) : null}
 
       <p className="breakdown__void">
-        The greyed steps below are the ones that fail, and everything resting on them
-        falls with them.{' '}
+        The greyed steps lose their justification when this hypothesis is removed,
+        including steps that depend on them. Some claims may still hold for this
+        particular counterexample.{' '}
         <button type="button" onClick={onRestore}>
           Put it back
         </button>

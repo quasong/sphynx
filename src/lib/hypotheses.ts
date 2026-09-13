@@ -21,7 +21,8 @@ export function stepsBrokenWithout(
     const usesIt = step.reason.some(
       (reason) => reason.type === 'hypothesis' && reason.ref === dropped,
     );
-    const restsOnBroken = (step.dependsOn ?? []).some((id) => broken.has(id));
+    const restsOnBroken = (step.dependsOn ?? []).some((id) => broken.has(id)) ||
+      step.reason.some((reason) => reason.type === 'step' && broken.has(reason.ref));
     if (usesIt || restsOnBroken) broken.add(step.id);
   }
 

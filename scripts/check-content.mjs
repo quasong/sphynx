@@ -11,16 +11,18 @@ const outfile = resolve('node_modules/.tmp/check-content.mjs');
 await mkdir(dirname(outfile), { recursive: true });
 
 await build({
-  entryPoints: ['src/content/index.ts'],
+  entryPoints: ['scripts/content-presentation.ts'],
   bundle: true,
   platform: 'node',
   format: 'esm',
+  packages: 'external',
+  jsx: 'automatic',
   outfile,
   logLevel: 'error',
 });
 
-const { entries, findContentProblems } = await import(pathToFileURL(outfile).href);
-const problems = findContentProblems();
+const { entries, findContentProblems, findPresentationProblems } = await import(pathToFileURL(outfile).href);
+const problems = [...findContentProblems(), ...findPresentationProblems()];
 
 if (problems.length > 0) {
   console.error(`[sphynx] ${problems.length} content problem(s):`);

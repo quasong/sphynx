@@ -1,6 +1,8 @@
+import { lazy, Suspense } from 'react';
 import { Link, Route, Routes } from 'react-router-dom';
-import { EntryPage } from './pages/EntryPage';
 import { LibraryPage } from './pages/LibraryPage';
+
+const EntryPage = lazy(() => import('./pages/EntryPage').then((module) => ({ default: module.EntryPage })));
 
 export function App() {
   return (
@@ -14,7 +16,11 @@ export function App() {
 
       <Routes>
         <Route path="/" element={<LibraryPage />} />
-        <Route path="/e/:id" element={<EntryPage />} />
+        <Route path="/e/:id" element={
+          <Suspense fallback={<main className="page" role="status">Loading the argument…</main>}>
+            <EntryPage />
+          </Suspense>
+        } />
         <Route path="*" element={<LibraryPage />} />
       </Routes>
 

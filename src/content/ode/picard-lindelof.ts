@@ -24,9 +24,10 @@ export const picardLindelof: Entry = {
     F : R \to \mathbb{R} \text{ continuous}, \qquad
     |F(t, y) - F(t, z)| \le L\,|y - z| \ \text{ on } R
     \\[6pt]
-    \Longrightarrow\;
-    \exists\, h > 0 \;\; \exists!\; y : [t_0 - h,\, t_0 + h] \to \mathbb{R} \text{ differentiable} : \quad
-    y'(t) = F(t, y(t)), \quad y(t_0) = y_0
+    a,b > 0, \quad L \ge 0 \quad\Longrightarrow\;
+    \exists\, h \in (0,a] \;\; \exists!\; y : I=[t_0-h,t_0+h] \to [y_0-b,y_0+b] \text{ continuous},
+    \\[4pt]
+    y'(t) = F(t, y(t)) \quad (t \in I^\circ), \qquad y(t_0) = y_0
   `,
   informal:
     'A rule for the slope at every point, and a point to start from, determine one curve — at least for a while. The proof produces the curve rather than asserting it: rewrite the equation so that the unknown is a function rather than a number, notice that the rewritten equation says a certain map leaves the unknown alone, and hand the map to the fixed point theorem. Everything the library built is spent exactly once, and the answer comes with a recipe for computing it.',
@@ -66,13 +67,14 @@ export const picardLindelof: Entry = {
     },
   ],
   references: [
+    { label: 'Jiří Lebl, Basic Analysis, §7.6', url: 'https://www.jirka.org/ra/html/sec_metpicard.html' },
     { label: 'Picard (1890), Lindelöf (1894); also called the Cauchy–Lipschitz theorem' },
     { label: 'Rudin, Principles of Mathematical Analysis, exercises 5.27 and 7.25 — uniqueness and existence, proved separately' },
   ],
   timeline: {
     kind: 'proof',
     strategy: 'construction',
-    given: [String.raw`M = \max_R |F|`],
+    given: [String.raw`a,b > 0, \quad L \ge 0`, String.raw`M = \max_R |F|`],
     steps: [
       {
         id: 'integral',
@@ -113,12 +115,13 @@ export const picardLindelof: Entry = {
         id: 'interval',
         title: 'Choose the interval short',
         claim: String.raw`
-          h = \min\!\Bigl( a,\ \tfrac{b}{M},\ \tfrac{1}{2L} \Bigr), \qquad I = [t_0 - h,\, t_0 + h]
+          h = \min\!\Bigl( a,\ \tfrac{b}{M+1},\ \tfrac{1}{2(L+1)} \Bigr) > 0, \qquad I = [t_0 - h,\, t_0 + h]
         `,
-        note: 'Three things are about to be asked of h, and each one shrinks it: stay inside the rectangle where F is defined, keep T from throwing candidates out of the band |y − y₀| ≤ b, and make the contraction factor Lh at most ½. M exists because a continuous function on a compact rectangle is bounded. The theorem is local because of the last two demands, and the observation at the end shows that it has to be.',
+        note: 'Three demands determine h: stay in the rectangle where F is defined, keep Mh ≤ b, and make Lh ≤ ½. Adding 1 to M and L makes this choice valid even when either is zero. M is finite because F is continuous on a compact rectangle. The single Lipschitz constant is fixed before h is chosen; without it this particular choice and the contraction argument are unavailable.',
         role: 'construction',
         reason: [
           { type: 'hypothesis', ref: 'continuous' },
+          { type: 'hypothesis', ref: 'lipschitz' },
           { type: 'cite', ref: 'thm.extreme-value', note: 'for a continuous function on a compact rectangle; stated on ℝ here, with the same proof' },
           { type: 'construction', note: 'Fix h once, before any candidate is named.' },
         ],
@@ -166,11 +169,12 @@ export const picardLindelof: Entry = {
         id: 'contraction',
         title: 'Lipschitz makes T a contraction',
         claim: String.raw`
-          |(Ty)(t) - (Tz)(t)| \le \int_{t_0}^{t} |F(s, y(s)) - F(s, z(s))|\,ds
-          \le L\,h\, d_\infty(y, z),
+          |(Ty)(t) - (Tz)(t)| = \Bigl|\int_{t_0}^{t} [F(s,y(s))-F(s,z(s))]\,ds\Bigr|
+          \\[4pt]
+          \le |t-t_0|\,\max_I |F(\cdot,y)-F(\cdot,z)| \le L\,h\, d_\infty(y, z),
           \qquad\text{so}\qquad d_\infty(Ty, Tz) \le \tfrac12\, d_\infty(y, z)
         `,
-        note: 'Two candidates within d of each other everywhere are, after one pass through T, within Lh·d of each other everywhere — and Lh ≤ ½. The single L for the whole rectangle is what makes this one factor rather than a factor that depends on the pair; the fixed point theorem\u2019s own counterexample shows what happens when it does.',
+        note: 'The difference Ty − Tz has derivative F(t,y(t)) − F(t,z(t)) and value zero at t₀, so the fundamental theorem writes it as the displayed integral. The absolute-value estimate works on either side of t₀, including reversed limits. Lipschitz bounds the integrand everywhere by L·d∞(y,z), so one pass through T reduces the distance by at least the factor Lh ≤ ½.',
         role: 'derivation',
         reason: [
           { type: 'hypothesis', ref: 'lipschitz' },

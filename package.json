@@ -9,7 +9,8 @@
     "build": "tsc -b && npm run check && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
-    "check": "node scripts/check-content.mjs"
+    "check": "node scripts/check-content.mjs",
+    "test": "node scripts/test.mjs"
   },
   "dependencies": {
     "katex": "^0.16.11",

@@ -11,6 +11,10 @@ import { compact } from './metric/compact';
 import { uniformConvergence } from './functions/uniform-convergence';
 import { uniformLimit } from './functions/uniform-limit';
 import { continuousFunctionsComplete } from './functions/continuous-functions-complete';
+import { derivative } from './differentiation/derivative';
+import { meanValue } from './differentiation/mean-value';
+import { riemannIntegral } from './integration/riemann-integral';
+import { continuousIntegrable } from './integration/continuous-integrable';
 import { fundamentalCalculus } from './integration/fundamental-calculus';
 import { picardLindelof } from './ode/picard-lindelof';
 import { completeMetricSpace, metricSpace } from './metric/metric-space';
@@ -43,6 +47,11 @@ export const entries: readonly Entry[] = [
   extremeValue,
   uniformContinuity,
   heineCantor,
+  derivative,
+  meanValue,
+  riemannIntegral,
+  continuousIntegrable,
+  fundamentalCalculus,
   metricSpace,
   completeMetricSpace,
   compact,
@@ -50,7 +59,6 @@ export const entries: readonly Entry[] = [
   uniformConvergence,
   uniformLimit,
   continuousFunctionsComplete,
-  fundamentalCalculus,
   picardLindelof,
   sqrt2Irrational,
   evenSquare,
@@ -113,10 +121,35 @@ export const KIND_LABEL: Record<EntryKind, string> = {
  * exist. A dangling citation is a content bug that is easy to introduce and
  * invisible in the rendered page, since the badge simply would not appear.
  */
-export function findContentProblems(): readonly string[] {
+export function findContentProblems(library: readonly Entry[] = entries): readonly string[] {
   const problems: string[] = [];
-  for (const entry of entries) {
+  const index = new Map(library.map((entry) => [entry.id, entry]));
+  const unique = (ids: readonly string[], context: string) => {
+    const seen = new Set<string>();
+    for (const id of ids) {
+      if (seen.has(id)) problems.push(`${context}: duplicate id "${id}"`);
+      seen.add(id);
+    }
+  };
+  unique(library.map((entry) => entry.id), 'entries');
+  for (const entry of library) {
+    const steps = entry.timeline?.steps ?? [];
+    unique(steps.map((step) => step.id), `${entry.id} steps`);
+    unique((entry.hypotheses ?? []).map((h) => h.id), `${entry.id} hypotheses`);
+    const positions = new Map(steps.map((step, i) => [step.id, i]));
     for (const step of entry.timeline?.steps ?? []) {
+      // Failure propagation walks forward, so all local dependencies must
+      // point backward; cycles and self-references are invalid too.
+      const dependencies = new Set([
+        ...(step.dependsOn ?? []),
+        ...step.reason.flatMap((r) => r.type === 'step' ? [r.ref] : []),
+      ]);
+      for (const ref of dependencies) {
+        const target = positions.get(ref);
+        if (target !== undefined && target >= (positions.get(step.id) ?? 0)) {
+          problems.push(`${entry.id} / ${step.id} must depend on an earlier step, not "${ref}"`);
+        }
+      }
       for (const reason of step.reason) {
         if (reason.type === 'cite' && !index.has(reason.ref)) {
           problems.push(`${entry.id} / ${step.id} cites unknown entry "${reason.ref}"`);
@@ -153,7 +186,7 @@ export function findContentProblems(): readonly string[] {
       }
     }
   }
-  problems.push(...findCitationCycles());
+  problems.push(...findCitationCycles(library, index));
   return problems;
 }
 
@@ -165,7 +198,7 @@ export function findContentProblems(): readonly string[] {
  * read, and the reading order is laid out as a tree on the index page. Cheaper
  * to catch here than to notice as a strange edge in the drawing.
  */
-function findCitationCycles(): readonly string[] {
+function findCitationCycles(library: readonly Entry[], index: ReadonlyMap<EntryId, Entry>): readonly string[] {
   const problems: string[] = [];
   const state = new Map<EntryId, 'visiting' | 'done'>();
 
@@ -183,6 +216,6 @@ function findCitationCycles(): readonly string[] {
     state.set(id, 'done');
   };
 
-  for (const entry of entries) walk(entry.id, []);
+  for (const entry of library) walk(entry.id, []);
   return problems;
 }

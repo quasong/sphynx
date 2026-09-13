@@ -147,7 +147,7 @@ function StepItem({
         <span className="step__number">{position}</span>
         <span className="step__role">{ROLE_LABEL[step.role]}</span>
         <span className="step__title">{step.title}</span>
-        {broken ? <span className="step__broken-tag">no longer holds</span> : null}
+        {broken ? <span className="step__broken-tag">not guaranteed</span> : null}
       </button>
 
       {/* Collapsed steps keep their heading so the shape of the argument stays

@@ -60,6 +60,20 @@ export const spine: readonly SpineSection[] = [
     entries: ['thm.extreme-value', 'def.uniform-continuity', 'thm.heine-cantor'],
   },
   {
+    id: 'differentiation',
+    title: 'Differentiation',
+    blurb:
+      'The slope of a chord, and what it means for the chords to settle — the continuity sentence again, for the chord slope at h = 0. Then the theorem that turns knowledge of the derivative everywhere into knowledge of the function: somewhere the tangent is parallel to the chord, which is the extreme value theorem spent on a tilted graph.',
+    entries: ['def.derivative', 'thm.mean-value'],
+  },
+  {
+    id: 'integration',
+    title: 'Integration',
+    blurb:
+      'Area, trapped between rectangles from below and above, and defined only when the trap closes. It closes for every continuous function — one δ for the whole interval is what lets one partition be fine enough everywhere, so this is where uniform continuity is spent. And then the theorem that joins the two sections: the area under g grows at the rate g, and a function is its starting value plus the integral of its derivative.',
+    entries: ['def.riemann-integral', 'thm.continuous-integrable', 'thm.fundamental-calculus'],
+  },
+  {
     id: 'metric',
     title: 'Metric spaces',
     blurb:
@@ -87,6 +101,6 @@ export const spine: readonly SpineSection[] = [
     title: 'Differential equations',
     blurb:
       'Where the climb was going. The fundamental theorem of calculus turns a derivative into an integral, which is a map on functions; a rule for the slope at every point then determines one curve through a given point, and the proof produces the curve, by handing that map to the fixed point theorem on the complete space just built. Every theorem above is spent here exactly once.',
-    entries: ['thm.fundamental-calculus', 'thm.picard-lindelof'],
+    entries: ['thm.picard-lindelof'],
   },
 ];
