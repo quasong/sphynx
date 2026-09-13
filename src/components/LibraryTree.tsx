@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { KIND_LABEL, citationsOf, dependentsOf, getEntry } from '../content';
 import type { TreeSection } from '../lib/tree';
@@ -87,9 +87,12 @@ export function LibraryTree({ sections, unplaced, onVisibleNode, onNavigateToEnt
       const r = boxOf(id);
       return r !== undefined && onScreen(id) && r.left >= box.right;
     });
-    const roomRight = base.right - box.right > 300;
-    const roomLeft = box.left - base.left > 40;
-    const side = neighbourRight && roomLeft ? 'left' : roomRight ? 'right' : 'left';
+    // Use the viewport rather than the tree's width: the tree can extend past
+    // the fold on wide layouts, which previously made a right-hand panel hang
+    // outside the browser even though the tree itself still had room.
+    const roomRight = window.innerWidth - box.right > 300;
+    const roomLeft = box.left > 300;
+    const side = neighbourRight && roomLeft ? 'left' : roomRight ? 'right' : roomLeft ? 'left' : 'right';
 
     // Low on the screen the panel would run off the fold, so hang it from the
     // card's lower edge instead of its upper one.
@@ -282,6 +285,60 @@ interface RelationPanelProps {
  * to scroll, and clicking takes them there.
  */
 function RelationPanel({ focus, from, nodes, onNavigateToEntry }: RelationPanelProps) {
+  const panelRef = useRef<HTMLElement>(null);
+  const nudgeRef = useRef({ x: 0, y: 0 });
+  const [nudge, setNudge] = useState({ x: 0, y: 0 });
+
+  // The panel is positioned relative to the tree so it follows its card while
+  // the page scrolls. After it renders, nudge that position back inside the
+  // viewport; this also handles a long relation list near the bottom edge.
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return undefined;
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const rendered = panel.getBoundingClientRect();
+      const applied = nudgeRef.current;
+      // Remove the previous correction before calculating the next one. If
+      // the panel already fits after nudging, preserving that correction is
+      // important: otherwise a scroll event would put it back off-screen.
+      const rect = {
+        left: rendered.left - applied.x,
+        right: rendered.right - applied.x,
+        top: rendered.top - applied.y,
+        bottom: rendered.bottom - applied.y,
+      };
+      const margin = 12;
+      const header =
+        parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 0;
+      const topLimit = header + margin;
+      let x = 0;
+      let y = 0;
+      if (rect.left < margin) x = margin - rect.left;
+      else if (rect.right > window.innerWidth - margin) x = window.innerWidth - margin - rect.right;
+      if (rect.top < topLimit) y = topLimit - rect.top;
+      else if (rect.bottom > window.innerHeight - margin) y = window.innerHeight - margin - rect.bottom;
+
+      if (Math.abs(applied.x - x) < 0.5 && Math.abs(applied.y - y) < 0.5) return;
+      nudgeRef.current = { x, y };
+      setNudge({ x, y });
+    };
+
+    update();
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [focus]);
+
   const jump = (id: EntryId) => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const target = nodes.get(id) ?? document.querySelector<HTMLElement>(`[data-entry="${CSS.escape(id)}"]`);
@@ -316,10 +373,18 @@ function RelationPanel({ focus, from, nodes, onNavigateToEntry }: RelationPanelP
       </div>
     );
 
+  const style = {
+    left: focus.x,
+    top: focus.y,
+    '--relations-nudge-x': `${nudge.x}px`,
+    '--relations-nudge-y': `${nudge.y}px`,
+  } as CSSProperties;
+
   return (
     <aside
+      ref={panelRef}
       className={`relations relations--${focus.side} ${focus.flip ? 'relations--flip' : ''}`}
-      style={{ left: focus.x, top: focus.y }}
+      style={style}
       aria-live="polite"
     >
       {group('Rests on', focus.restsOn, 'rests-on')}

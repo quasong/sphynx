@@ -81,6 +81,7 @@ export function EntryPage() {
   const broken = timeline ? stepsBrokenWithout(timeline, hypothesis.dropped) : new Set<string>();
   const section = spine.find((candidate) => candidate.entries.includes(entry.id));
   const progress = steps.length === 0 || step.index === STATEMENT ? 0 : ((step.index + 1) / steps.length) * 100;
+  const nextStep = steps[step.index === STATEMENT ? 0 : step.index + 1];
 
   const renderStepper = (className: string) => (
     <nav className={`stepper ${className}`} aria-label="Walk through the argument">
@@ -90,8 +91,18 @@ export function EntryPage() {
       <span className="stepper__position">
         {step.index === STATEMENT ? 'Statement' : `Step ${step.index + 1} of ${steps.length}`}
       </span>
-      <button type="button" onClick={step.next} disabled={step.atEnd}>
-        {step.index === STATEMENT ? 'Start →' : 'Next →'}
+      <button
+        type="button"
+        onClick={step.next}
+        disabled={step.atEnd}
+        title={nextStep?.title}
+        aria-label={nextStep ? `${step.index === STATEMENT ? 'Start' : 'Next'}: ${nextStep.title}` : undefined}
+      >
+        <span className="stepper__next-label">
+          <span>{step.index === STATEMENT ? 'Start' : 'Next'}</span>
+          {nextStep ? <span className="stepper__next-title">{nextStep.title}</span> : null}
+          <span aria-hidden="true">→</span>
+        </span>
       </button>
     </nav>
   );

@@ -149,9 +149,14 @@ function StepItem({
   state,
   onSelect,
 }: StepItemProps) {
+  const bodyRef = useRef<HTMLDivElement>(null);
   const dependencies = (step.dependsOn ?? [])
     .map((id) => positions.get(id))
     .filter((n): n is number => n !== undefined);
+
+  useEffect(() => {
+    bodyRef.current?.toggleAttribute('inert', state !== 'current');
+  }, [state]);
 
   return (
     <li
@@ -176,32 +181,38 @@ function StepItem({
 
       {/* Collapsed steps keep their heading so the shape of the argument stays
           visible; only the detail is withheld until a step is selected. */}
-      <div className="step__body" hidden={state !== 'current'}>
-        {step.claim ? <MathExpr tex={step.claim} display /> : null}
-        {step.note ? <p className="step__note">{step.note}</p> : null}
+      <div
+        ref={bodyRef}
+        className={`step__body ${state === 'current' ? 'step__body--open' : ''}`}
+        aria-hidden={state !== 'current'}
+      >
+        <div className="step__body-inner">
+          {step.claim ? <MathExpr tex={step.claim} display /> : null}
+          {step.note ? <p className="step__note">{step.note}</p> : null}
 
-        <div className="step__reasons">
-          <span className="step__reasons-label">Because</span>
-          <ul>
-            {step.reason.map((reason, idx) => (
-              <li key={idx}>
-                <ReasonItem
-                  reason={reason}
-                  positions={positions}
-                  labels={labels}
-                  dropped={dropped}
-                />
-              </li>
-            ))}
-          </ul>
+          <div className="step__reasons">
+            <span className="step__reasons-label">Because</span>
+            <ul>
+              {step.reason.map((reason, idx) => (
+                <li key={idx}>
+                  <ReasonItem
+                    reason={reason}
+                    positions={positions}
+                    labels={labels}
+                    dropped={dropped}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {dependencies.length > 0 ? (
+            <p className="step__depends">
+              Builds on {dependencies.length === 1 ? 'step' : 'steps'}{' '}
+              {dependencies.join(', ')}
+            </p>
+          ) : null}
         </div>
-
-        {dependencies.length > 0 ? (
-          <p className="step__depends">
-            Builds on {dependencies.length === 1 ? 'step' : 'steps'}{' '}
-            {dependencies.join(', ')}
-          </p>
-        ) : null}
       </div>
     </li>
   );
