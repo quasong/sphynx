@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 import type { FigureProps } from '../types/figure';
+import { ArzelaAscoliFigure, EquicontinuityFigure } from './ArzelaAscoliFigure';
 import { ArchimedeanFigure } from './ArchimedeanFigure';
 import { BisectionFigure } from './BisectionFigure';
 import { CauchyCriterionFigure, CauchyFigure } from './CauchyFigure';
@@ -57,6 +58,8 @@ const FIGURES: Record<string, ComponentType<FigureProps>> = {
   'uniform-convergence': UniformConvergenceFigure,
   'uniform-limit': UniformLimitFigure,
   'continuous-complete': ContinuousCompleteFigure,
+  equicontinuity: EquicontinuityFigure,
+  'arzela-ascoli': ArzelaAscoliFigure,
   derivative: DerivativeFigure,
   'mean-value': MeanValueFigure,
   'riemann-integral': RiemannFigure,

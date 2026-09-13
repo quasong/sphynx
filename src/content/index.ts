@@ -11,6 +11,8 @@ import { compact } from './metric/compact';
 import { uniformConvergence } from './functions/uniform-convergence';
 import { uniformLimit } from './functions/uniform-limit';
 import { continuousFunctionsComplete } from './functions/continuous-functions-complete';
+import { equicontinuity } from './functions/equicontinuity';
+import { arzelaAscoli } from './functions/arzela-ascoli';
 import { derivative } from './differentiation/derivative';
 import { meanValue } from './differentiation/mean-value';
 import { riemannIntegral } from './integration/riemann-integral';
@@ -72,6 +74,8 @@ export const entries: readonly Entry[] = [
   uniformConvergence,
   uniformLimit,
   continuousFunctionsComplete,
+  equicontinuity,
+  arzelaAscoli,
   picardLindelof,
   sqrt2Irrational,
   evenSquare,
