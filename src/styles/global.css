@@ -868,6 +868,13 @@ code {
      scrolls away with the proof instead of staying beside it. */
 }
 
+/* Give the sticky figure a full viewport of travel on the two-column layout.
+   This keeps short final steps from pinning it against the body's bottom edge
+   when their neighbours open or close. */
+.entry:not(.entry--no-figure) .entry__body {
+  min-height: calc(100vh - var(--topbar-h));
+}
+
 .entry--no-figure .entry__body {
   grid-template-columns: minmax(0, 1fr);
   max-width: 760px;
@@ -1465,6 +1472,7 @@ code {
 @media (max-width: 980px) {
   .entry__body {
     grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
   }
 
   .entry__figure-sticky {

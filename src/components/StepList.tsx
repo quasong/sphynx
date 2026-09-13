@@ -53,23 +53,37 @@ export function StepList({
   const positions = new Map(timeline.steps.map((s, i) => [s.id, i + 1]));
   const labels = new Map(hypotheses.map((h) => [h.id, h.label]));
   const cards = useRef(new Map<number, HTMLLIElement>());
+  const hasMounted = useRef(false);
 
-  // Line the selected step up with the figure, which is centred in the
-  // viewport - so the step is centred too and the pair meets on the same line
-  // whatever the height of the card.
+  // Keep the selected heading in a comfortable reading band. Earlier this
+  // centred the whole card, but the card is expanding at the same time as this
+  // effect runs. That meant the target was measured while the body was still
+  // collapsed; once it opened, the sticky figure could be pushed against the
+  // bottom of its column and jump a long way. The heading is stable during the
+  // transition, so only move the page when it actually leaves the viewport.
   //
   // Scrolled by hand rather than through scrollIntoView so the target can be
   // capped. The closing steps cannot be centred without scrolling past the foot
   // of the figure's column, which unpins the figure and cuts off the top of the
-  // drawing; the alternative was padding every page with a screenful of empty
-  // space to scroll against. Those steps settle a little below centre instead,
-  // which costs nothing a reader would notice.
+  // drawing; keeping the current heading visible avoids that trade-off while
+  // preserving the reader's visual anchor.
   useEffect(() => {
     const card = cards.current.get(selected);
     if (!card) return;
 
-    const box = card.getBoundingClientRect();
-    const centred = window.scrollY + box.top + box.height / 2 - window.innerHeight / 2;
+    const heading = card.querySelector<HTMLElement>('.step__header') ?? card;
+    const box = heading.getBoundingClientRect();
+    const header =
+      parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 0;
+    const topInset = header + 24;
+    const bottomInset = Math.max(topInset + 1, window.innerHeight - 32);
+    let target = window.scrollY;
+    if (box.top < topInset) {
+      target += box.top - topInset;
+    } else if (box.bottom > bottomInset) {
+      target += box.bottom - bottomInset;
+    }
+
     const ceiling = scrollCeiling?.() ?? Number.POSITIVE_INFINITY;
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -77,7 +91,7 @@ export function StepList({
     // quick second click interrupts the first animation and the page appears
     // to lurch. Keep the animation here so its previous frame can be cancelled
     // cleanly whenever the selected step changes again.
-    const target = Math.max(0, Math.min(centred, ceiling));
+    target = Math.max(0, Math.min(target, ceiling));
     if (still || Math.abs(target - window.scrollY) < 1) {
       window.scrollTo({ top: target, behavior: 'auto' });
       return undefined;
@@ -102,6 +116,21 @@ export function StepList({
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
   }, [selected, scrollCeiling]);
+
+  // Next/Back lives inside the sticky figure. Move focus to the newly selected
+  // heading without asking the browser to scroll it into view; otherwise a
+  // height change in the reading column can make the focused sticky button
+  // trigger a second, unwanted page shift.
+  useEffect(() => {
+    const card = cards.current.get(selected);
+    const heading = card?.querySelector<HTMLButtonElement>('.step__header');
+    if (!heading) return;
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
+    heading.focus({ preventScroll: true });
+  }, [selected]);
 
   return (
     <ol className="steps">
