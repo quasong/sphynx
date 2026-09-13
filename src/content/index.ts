@@ -16,6 +16,7 @@ import { meanValue } from './differentiation/mean-value';
 import { riemannIntegral } from './integration/riemann-integral';
 import { continuousIntegrable } from './integration/continuous-integrable';
 import { fundamentalCalculus } from './integration/fundamental-calculus';
+import { powerSeries, seriesCauchyCriterion, seriesConvergence, taylorTheorem } from './series';
 import { picardLindelof } from './ode/picard-lindelof';
 import { completeMetricSpace, metricSpace } from './metric/metric-space';
 import { monotoneConvergence } from './analysis/monotone-convergence';
@@ -52,6 +53,10 @@ export const entries: readonly Entry[] = [
   riemannIntegral,
   continuousIntegrable,
   fundamentalCalculus,
+  seriesConvergence,
+  seriesCauchyCriterion,
+  powerSeries,
+  taylorTheorem,
   metricSpace,
   completeMetricSpace,
   compact,

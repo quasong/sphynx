@@ -74,6 +74,18 @@ export const spine: readonly SpineSection[] = [
     entries: ['def.riemann-integral', 'thm.continuous-integrable', 'thm.fundamental-calculus'],
   },
   {
+    id: 'series',
+    title: 'Series',
+    blurb:
+      'Infinite sums read as limits of running totals — where the terms going to zero is necessary but not sufficient, and the Cauchy tail test is the sequence criterion in disguise. Power series turn the Taylor polynomial into an infinite polynomial; Taylor\'s theorem says what is left over, in one term involving a derivative somewhere in between.',
+    entries: [
+      'def.series-convergence',
+      'thm.series-cauchy-criterion',
+      'def.power-series',
+      'thm.taylor-theorem',
+    ],
+  },
+  {
     id: 'metric',
     title: 'Metric spaces',
     blurb:
