@@ -14,6 +14,7 @@ import { IntermediateValueFigure } from './IntermediateValueFigure';
 import { FixedPointFigure } from './FixedPointFigure';
 import { MetricFigure } from './MetricFigure';
 import { MonotoneFigure } from './MonotoneFigure';
+import { PicardFigure } from './PicardFigure';
 import { SequenceLimitFigure } from './SequenceLimitFigure';
 import { Sqrt2Figure } from './Sqrt2Figure';
 import { HeineCantorFigure, UniformContinuityFigure } from './UniformContinuityFigure';
@@ -48,6 +49,7 @@ const FIGURES: Record<string, ComponentType<FigureProps>> = {
   'uniform-convergence': UniformConvergenceFigure,
   'uniform-limit': UniformLimitFigure,
   'continuous-complete': ContinuousCompleteFigure,
+  picard: PicardFigure,
 };
 
 export function getFigure(id: string | undefined): ComponentType<FigureProps> | undefined {

@@ -82,4 +82,11 @@ export const spine: readonly SpineSection[] = [
       'thm.continuous-functions-complete',
     ],
   },
+  {
+    id: 'ode',
+    title: 'Differential equations',
+    blurb:
+      'Where the climb was going. A rule for the slope at every point determines one curve through a given point, and the proof produces the curve: the equation is rewritten so that its unknown is a point of the complete space just built, and the fixed point theorem does the rest. Every theorem above is spent here exactly once.',
+    entries: ['thm.picard-lindelof'],
+  },
 ];

@@ -11,6 +11,7 @@ import { compact } from './metric/compact';
 import { uniformConvergence } from './functions/uniform-convergence';
 import { uniformLimit } from './functions/uniform-limit';
 import { continuousFunctionsComplete } from './functions/continuous-functions-complete';
+import { picardLindelof } from './ode/picard-lindelof';
 import { completeMetricSpace, metricSpace } from './metric/metric-space';
 import { monotoneConvergence } from './analysis/monotone-convergence';
 import { sequenceLimit } from './analysis/sequence-limit';
@@ -48,6 +49,7 @@ export const entries: readonly Entry[] = [
   uniformConvergence,
   uniformLimit,
   continuousFunctionsComplete,
+  picardLindelof,
   sqrt2Irrational,
   evenSquare,
   ...foundationEntries,
