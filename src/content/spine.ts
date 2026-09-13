@@ -86,7 +86,7 @@ export const spine: readonly SpineSection[] = [
     id: 'ode',
     title: 'Differential equations',
     blurb:
-      'Where the climb was going. A rule for the slope at every point determines one curve through a given point, and the proof produces the curve: the equation is rewritten so that its unknown is a point of the complete space just built, and the fixed point theorem does the rest. Every theorem above is spent here exactly once.',
-    entries: ['thm.picard-lindelof'],
+      'Where the climb was going. The fundamental theorem of calculus turns a derivative into an integral, which is a map on functions; a rule for the slope at every point then determines one curve through a given point, and the proof produces the curve, by handing that map to the fixed point theorem on the complete space just built. Every theorem above is spent here exactly once.',
+    entries: ['thm.fundamental-calculus', 'thm.picard-lindelof'],
   },
 ];

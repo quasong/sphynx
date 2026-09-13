@@ -94,9 +94,9 @@ own, and the arc ends where it was going: a differential equation, rewritten so
 that its unknown is a point of that space, is solved by the fixed point theorem.
 Every theorem above it is spent there exactly once. The one thing it needs that
 the library does not yet prove — the fundamental theorem of calculus, for
-continuous integrands — is stated as an honest leaf, the way the completeness
-axiom is, so that an integration section can be added later without anything
-that cites it changing.
+continuous integrands — sits on the trunk stated without proof, the way the
+completeness axiom does, so that an integration section can be added later
+without anything that cites it changing.
 
 Everything is on that arc. An entry that nothing in the reading order reaches,
 and nothing will, does not belong here even if it is good — the index is a
