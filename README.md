@@ -55,7 +55,9 @@ is one renderer rather than two.
 A hand-written dependency list drifts out of sync with the proof the moment a
 step is edited. `findContentProblems` fails loudly in development when a step
 cites an entry, step or hypothesis that does not exist, when a hypothesis is
-stated but never used, or when citations form a cycle.
+stated but never used, or when citations form a cycle. `npm run check` runs the
+same checks in Node, and `npm run build` runs it before bundling, so a content
+bug cannot ship.
 
 **The step index is the only state.** Selecting step *n* highlights its formula,
 moves the figure to its *n*-th configuration, and surfaces the entries that step
