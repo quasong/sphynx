@@ -8,6 +8,7 @@ import { heineCantor } from './analysis/heine-cantor';
 import { intermediateValue } from './analysis/intermediate-value';
 import { banachFixedPoint } from './metric/banach-fixed-point';
 import { compact } from './metric/compact';
+import { uniformConvergence } from './functions/uniform-convergence';
 import { completeMetricSpace, metricSpace } from './metric/metric-space';
 import { monotoneConvergence } from './analysis/monotone-convergence';
 import { sequenceLimit } from './analysis/sequence-limit';
@@ -42,6 +43,7 @@ export const entries: readonly Entry[] = [
   completeMetricSpace,
   compact,
   banachFixedPoint,
+  uniformConvergence,
   sqrt2Irrational,
   evenSquare,
   ...foundationEntries,
