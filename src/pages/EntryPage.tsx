@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { KIND_LABEL, getEntry } from '../content';
+import { spine } from '../content/spine';
 import { HypothesisBreakdown, HypothesisSwitches } from '../components/HypothesisPanel';
 import { MathExpr } from '../components/MathExpr';
 import { ReferencePanel } from '../components/ReferencePanel';
@@ -78,9 +79,11 @@ export function EntryPage() {
   const Figure = getFigure(entry.figureId);
   const current = step.index >= 0 ? steps[step.index] : undefined;
   const broken = timeline ? stepsBrokenWithout(timeline, hypothesis.dropped) : new Set<string>();
+  const section = spine.find((candidate) => candidate.entries.includes(entry.id));
+  const progress = steps.length === 0 || step.index === STATEMENT ? 0 : ((step.index + 1) / steps.length) * 100;
 
-  const stepper = (
-    <nav className="stepper" aria-label="Walk through the argument">
+  const renderStepper = (className: string) => (
+    <nav className={`stepper ${className}`} aria-label="Walk through the argument">
       <button type="button" onClick={step.previous} disabled={step.atStart}>
         ← Back
       </button>
@@ -96,6 +99,31 @@ export function EntryPage() {
   return (
     <main className={`page entry ${Figure ? '' : 'entry--no-figure'}`}>
       <header className="entry__head">
+        <nav className="entry__breadcrumb" aria-label="Breadcrumb">
+          <Link to="/">Library</Link>
+          <span aria-hidden="true">/</span>
+          <span>{section?.title ?? 'Supporting results'}</span>
+        </nav>
+
+        {timeline ? (
+          <div className="entry__progress" aria-label="Reading progress">
+            <div className="entry__progress-topline">
+              <span>{step.index === STATEMENT ? 'Statement' : `Step ${step.index + 1} of ${steps.length}`}</span>
+              <span>{Math.round(progress)}%</span>
+            </div>
+            <div
+              className="entry__progress-track"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={steps.length}
+              aria-valuenow={step.index === STATEMENT ? 0 : step.index + 1}
+              aria-valuetext={step.index === STATEMENT ? 'Statement' : `Step ${step.index + 1} of ${steps.length}`}
+            >
+              <span className="entry__progress-value" style={{ width: `${progress}%` }} />
+            </div>
+          </div>
+        ) : null}
+
         <p className="entry__kind">
           {KIND_LABEL[entry.kind]}
           {timeline?.strategy ? ` · ${STRATEGY_LABEL[timeline.strategy] ?? timeline.strategy}` : ''}
@@ -132,7 +160,7 @@ export function EntryPage() {
                 highlight={current?.highlight ?? []}
                 dropped={hypothesis.dropped}
               />
-              {timeline ? stepper : null}
+              {timeline ? renderStepper('stepper--figure') : null}
               <HypothesisSwitches
                 hypotheses={hypotheses}
                 dropped={hypothesis.dropped}
@@ -162,7 +190,7 @@ export function EntryPage() {
               </h2>
               {Figure ? null : (
                 <div className="entry__steps-controls">
-                  {stepper}
+                  {renderStepper('stepper--inline')}
                   <p className="entry__hint">Arrow keys move between steps.</p>
                 </div>
               )}
@@ -185,6 +213,8 @@ export function EntryPage() {
 
         </div>
       </div>
+
+      {timeline ? <div className="entry__mobile-stepper">{renderStepper('stepper--mobile')}</div> : null}
 
       <ReferencePanel entry={entry} />
     </main>

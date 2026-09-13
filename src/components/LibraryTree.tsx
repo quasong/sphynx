@@ -275,7 +275,8 @@ interface RelationPanelProps {
  */
 function RelationPanel({ focus, from, nodes }: RelationPanelProps) {
   const jump = (id: EntryId) => {
-    nodes.get(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    nodes.get(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
   };
 
   const direction = (id: EntryId): string => {

@@ -20,8 +20,9 @@ interface TableOfContentsProps {
  */
 export function TableOfContents({ sections, current }: TableOfContentsProps) {
   const jump = (id: string) => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     document.querySelector(`[data-entry="${CSS.escape(id)}"]`)?.scrollIntoView({
-      behavior: 'smooth',
+      behavior: reduced ? 'auto' : 'smooth',
       block: 'start',
     });
   };

@@ -38,6 +38,7 @@ export function HypothesisSwitches({ hypotheses, dropped, onToggle }: SwitchesPr
               >
                 <span className="switch__track" aria-hidden="true" />
                 <span className="switch__label">{hypothesis.label}</span>
+                <span className="switch__state">{off ? 'Off' : 'On'}</span>
               </button>
             </li>
           );
