@@ -8,6 +8,34 @@
       name="description"
       content="Visual, step-by-step explanations of mathematical theorems and definitions."
     />
+
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf9f6" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#16161a" />
+
+    <!--
+      The share card. Deep links carry the entry in the fragment, which never
+      reaches a server, so every link shares this one site-level card rather
+      than the proof it points at. og:url and og:image have to be absolute,
+      which is the one place the deployment URL is written down.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sphynx" />
+    <meta property="og:title" content="Sphynx — Proofs, step by step" />
+    <meta
+      property="og:description"
+      content="Step through a theorem beside a figure that changes as the argument does, and switch a hypothesis off to watch the proof fail."
+    />
+    <meta property="og:url" content="https://quasong.github.io/sphynx/" />
+    <meta property="og:image" content="https://quasong.github.io/sphynx/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Sphynx: a curve with the chord between its endpoints and the parallel tangent the mean value theorem promises."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>

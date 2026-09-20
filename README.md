@@ -7,6 +7,8 @@ changing as the argument does and every step naming the results it leans on.
 Pick a definition and you get the failed attempts that forced it into its final
 shape, rather than the finished formula alone.
 
+**[quasong.github.io/sphynx](https://quasong.github.io/sphynx/)**
+
 ```bash
 npm install && npm run dev
 ```
@@ -103,7 +105,7 @@ own. Arzelà–Ascoli is the compactness theorem for equicontinuous families.
 The arc ends where it was going: a differential equation, rewritten so that
 its unknown is a point of that space, is solved by the fixed point theorem;
 Grönwall's inequality then turns the same integral estimates into a stability
-bound. There are currently 40 entries, 37 with timelines; the remaining entries
+bound. There are currently 41 entries, 38 with timelines; the remaining entries
 are the completeness axiom and two elementary definitions.
 
 Everything is on that arc. An entry that nothing in the reading order reaches,
@@ -132,7 +134,9 @@ Tests use Node's built-in test runner and the existing esbuild dependency.
 They exercise tree placement, failure propagation, URL bounds and parameter
 preservation, invalid content, all figure steps and single-hypothesis states,
 and the numerical bounds behind the integration drawings. CI runs the tests
-and production build on pushes and pull requests.
+and production build on pushes and pull requests, and publishes that same
+build to GitHub Pages when it passes on `main` — the deployed artifact is
+the one the checks ran against, not a second build of it.
 
 For visual review, start `npm run dev` and open
 `/gallery.html?fig=mean-value`. The gallery derives real step ids, highlights
@@ -159,6 +163,7 @@ src/content/    The library itself, plus the derived dependency graph
 src/figures/    One component per figure, over a shared set of SVG primitives
 src/components/ Steps, citations, KaTeX rendering
 src/pages/      The library index and the entry page
-scripts/        Content/presentation checks and the Node test runner
+scripts/        Content/presentation checks, the test runner, the share card
+public/         Favicon, touch icon and the rendered share card
 tests/          Content, navigation, dependency and figure regression checks
 ```

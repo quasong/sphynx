@@ -1,0 +1,66 @@
+<!doctype html>
+<!--
+  Source for public/og.png, the share card. Regenerate after editing:
+
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless \
+      --window-size=1200,630 --force-device-scale-factor=1 --hide-scrollbars \
+      --screenshot=public/og.png scripts/og-card.html
+
+  The drawing is the mean value theorem, and its geometry is computed rather
+  than eyeballed: the curve is f(x) = x + 0.35 sin(2 pi x) sampled over [0, 1],
+  the chord joins its endpoints (slope 1), and the tangent is drawn at c = 3/4,
+  where f'(c) = 1 + 0.7 pi cos(3 pi / 2) = 1. So the two lines really are
+  parallel and the tangent really does touch the curve, which is the whole
+  claim of the picture.
+-->
+<html><head><meta charset="utf-8"><style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #faf9f6; color: #1d1b18;
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 72px 84px;
+  }
+  .left { width: 578px; }
+  .mark { display: flex; align-items: center; gap: 15px; margin-bottom: 34px; }
+  .mark span {
+    font-family: -apple-system, 'Helvetica Neue', sans-serif;
+    font-size: 19px; letter-spacing: .26em; text-transform: uppercase; color: #6a645a;
+  }
+  h1 { font-size: 84px; line-height: 1.04; letter-spacing: -.018em; }
+  .rule { width: 86px; height: 3px; background: #2b4a8b; margin: 34px 0 24px; }
+  .tag { font-size: 32px; line-height: 1.4; color: #4a453d; text-wrap: balance; }
+  .foot {
+    font-family: -apple-system, 'Helvetica Neue', sans-serif;
+    font-size: 21px; color: #938c80; margin-top: 26px;
+  }
+</style></head><body>
+  <div class="left">
+    <div class="mark">
+      <svg width="40" height="40" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#2b4a8b"/><path d="M6 25 H13 V18 H20 V11 H26" fill="none" stroke="#faf9f6" stroke-width="3.2" stroke-linejoin="miter" stroke-linecap="butt"/></svg>
+      <span>Sphynx</span>
+    </div>
+    <h1>Proofs you can<br>watch happen</h1>
+    <div class="rule"></div>
+    <p class="tag">Step through a theorem beside a figure that changes as the argument does.</p>
+    <p class="foot">Switch a hypothesis off and watch the proof fail.</p>
+  </div>
+  <svg width="410" height="319" viewBox="0 0 424 330">
+    <g stroke="#cac3b5" stroke-width="1.4" stroke-dasharray="4 6">
+      <path d="M74 274 V 300"/><path d="M384 64 V 300"/><path d="M306.5 190 V 300"/>
+    </g>
+    <path d="M40 40 V 300 H 404" fill="none" stroke="#a39c8e" stroke-width="1.5"/>
+    <path d="M 74 274 L 75.9 269.8 L 77.9 265.6 L 79.8 261.4 L 81.8 257.3 L 83.7 253.1 L 85.6 249 L 87.6 244.9 L 89.5 240.8 L 91.4 236.7 L 93.4 232.7 L 95.3 228.8 L 97.3 224.9 L 99.2 221 L 101.1 217.2 L 103.1 213.5 L 105 209.8 L 106.9 206.2 L 108.9 202.6 L 110.8 199.2 L 112.8 195.8 L 114.7 192.5 L 116.6 189.2 L 118.6 186.1 L 120.5 183 L 122.4 180.1 L 124.4 177.2 L 126.3 174.4 L 128.3 171.8 L 130.2 169.2 L 132.1 166.7 L 134.1 164.4 L 136 162.1 L 137.9 159.9 L 139.9 157.9 L 141.8 156 L 143.8 154.2 L 145.7 152.4 L 147.6 150.9 L 149.6 149.4 L 151.5 148 L 153.4 146.7 L 155.4 145.6 L 157.3 144.6 L 159.3 143.7 L 161.2 142.8 L 163.1 142.2 L 165.1 141.6 L 167 141.1 L 168.9 140.7 L 170.9 140.5 L 172.8 140.3 L 174.8 140.3 L 176.7 140.3 L 178.6 140.5 L 180.6 140.7 L 182.5 141 L 184.4 141.5 L 186.4 142 L 188.3 142.6 L 190.3 143.3 L 192.2 144 L 194.1 144.9 L 196.1 145.8 L 198 146.8 L 199.9 147.9 L 201.9 149 L 203.8 150.1 L 205.8 151.4 L 207.7 152.7 L 209.6 154 L 211.6 155.4 L 213.5 156.8 L 215.4 158.2 L 217.4 159.7 L 219.3 161.2 L 221.3 162.8 L 223.2 164.3 L 225.1 165.9 L 227.1 167.4 L 229 169 L 230.9 170.6 L 232.9 172.1 L 234.8 173.7 L 236.8 175.2 L 238.7 176.8 L 240.6 178.3 L 242.6 179.8 L 244.5 181.2 L 246.4 182.6 L 248.4 184 L 250.3 185.3 L 252.3 186.6 L 254.2 187.9 L 256.1 189 L 258.1 190.1 L 260 191.2 L 261.9 192.2 L 263.9 193.1 L 265.8 194 L 267.8 194.7 L 269.7 195.4 L 271.6 196 L 273.6 196.5 L 275.5 197 L 277.4 197.3 L 279.4 197.5 L 281.3 197.7 L 283.3 197.7 L 285.2 197.7 L 287.1 197.5 L 289.1 197.3 L 291 196.9 L 292.9 196.4 L 294.9 195.8 L 296.8 195.2 L 298.8 194.3 L 300.7 193.4 L 302.6 192.4 L 304.6 191.3 L 306.5 190 L 308.4 188.6 L 310.4 187.1 L 312.3 185.6 L 314.3 183.8 L 316.2 182 L 318.1 180.1 L 320.1 178.1 L 322 175.9 L 323.9 173.6 L 325.9 171.3 L 327.8 168.8 L 329.8 166.2 L 331.7 163.6 L 333.6 160.8 L 335.6 157.9 L 337.5 155 L 339.4 151.9 L 341.4 148.8 L 343.3 145.5 L 345.3 142.2 L 347.2 138.8 L 349.1 135.4 L 351.1 131.8 L 353 128.2 L 354.9 124.5 L 356.9 120.8 L 358.8 117 L 360.8 113.1 L 362.7 109.2 L 364.6 105.3 L 366.6 101.3 L 368.5 97.2 L 370.4 93.1 L 372.4 89 L 374.3 84.9 L 376.3 80.7 L 378.2 76.6 L 380.1 72.4 L 382.1 68.2 L 384 64" fill="none" stroke="#a85a1b" stroke-width="4.5"
+          stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 74 274 L 384 64" stroke="#2b4a8b" stroke-width="3" stroke-dasharray="9 8" stroke-linecap="round"/>
+    <path d="M 241.4 234.1 L 371.6 145.9" stroke="#166e6e" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="74" cy="274" r="6" fill="#2b4a8b"/>
+    <circle cx="384" cy="64" r="6" fill="#2b4a8b"/>
+    <circle cx="306.5" cy="190" r="7" fill="#166e6e"/>
+    <g fill="#6a645a" font-family="'Iowan Old Style', Palatino, Georgia, serif"
+       font-size="22" font-style="italic" text-anchor="middle">
+      <text x="74" y="322">a</text><text x="384" y="322">b</text><text x="306.5" y="322">c</text>
+    </g>
+  </svg>
+</body></html>
