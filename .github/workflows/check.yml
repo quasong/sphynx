@@ -2,6 +2,13 @@ name: Check
 on: [push, pull_request]
 permissions:
   contents: read
+
+# One deployment at a time, and never cancel one halfway: a partly replaced
+# site is worse than a stale one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -14,3 +21,22 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+      # The artifact is the build that just passed, not a second one.
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          path: dist
+
+  deploy:
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
