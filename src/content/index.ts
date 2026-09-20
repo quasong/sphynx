@@ -9,6 +9,7 @@ import { intermediateValue } from './analysis/intermediate-value';
 import { banachFixedPoint } from './metric/banach-fixed-point';
 import { compact } from './metric/compact';
 import { uniformConvergence } from './functions/uniform-convergence';
+import { weierstrassMTest } from './functions/weierstrass-m-test';
 import { uniformLimit } from './functions/uniform-limit';
 import { continuousFunctionsComplete } from './functions/continuous-functions-complete';
 import { equicontinuity } from './functions/equicontinuity';
@@ -73,6 +74,7 @@ export const entries: readonly Entry[] = [
   compact,
   banachFixedPoint,
   uniformConvergence,
+  weierstrassMTest,
   uniformLimit,
   continuousFunctionsComplete,
   equicontinuity,

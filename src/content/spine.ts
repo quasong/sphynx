@@ -103,9 +103,10 @@ export const spine: readonly SpineSection[] = [
     id: 'functions',
     title: 'Sequences of functions',
     blurb:
-      'Convergence one level up, where each term is a function. Asked point by point it lets continuity fall out of the limit; the repair is the quantifier move from uniform continuity, made a second time — and it turns functions into the points of a metric space, complete whenever the domain is compact. Equicontinuity makes the same move across a family, and Arzelà–Ascoli is Bolzano–Weierstrass for those families: a shared δ upgrades a diagonal subsequence into a uniform limit.',
+      'Convergence one level up, where each term is a function. Asked point by point it lets continuity fall out of the limit; the repair is the quantifier move from uniform continuity, made a second time. A summable numerical envelope then controls a whole function series at once, and uniform convergence turns functions into the points of a metric space, complete whenever the domain is compact. Equicontinuity makes the same move across a family, and Arzelà–Ascoli is Bolzano–Weierstrass for those families: a shared δ upgrades a diagonal subsequence into a uniform limit.',
     entries: [
       'def.uniform-convergence',
+      'thm.weierstrass-m-test',
       'thm.uniform-limit-continuous',
       'thm.continuous-functions-complete',
       'def.equicontinuity',

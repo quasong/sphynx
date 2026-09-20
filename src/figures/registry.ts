@@ -30,6 +30,7 @@ import { Sqrt2Figure } from './Sqrt2Figure';
 import { HeineCantorFigure, UniformContinuityFigure } from './UniformContinuityFigure';
 import { UniformConvergenceFigure } from './UniformConvergenceFigure';
 import { UniformLimitFigure } from './UniformLimitFigure';
+import { MTestFigure } from './MTestFigure';
 import { SupremumFigure } from './SupremumFigure';
 
 /**
@@ -57,6 +58,7 @@ const FIGURES: Record<string, ComponentType<FigureProps>> = {
   'closed-set': ClosedSetFigure,
   compact: CompactFigure,
   'uniform-convergence': UniformConvergenceFigure,
+  'weierstrass-m-test': MTestFigure,
   'uniform-limit': UniformLimitFigure,
   'continuous-complete': ContinuousCompleteFigure,
   equicontinuity: EquicontinuityFigure,
