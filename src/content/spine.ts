@@ -120,3 +120,10 @@ export const spine: readonly SpineSection[] = [
     entries: ['thm.picard-lindelof', 'thm.gronwall'],
   },
 ];
+
+/** The next trunk entry in the course's declared reading order. */
+export function nextSpineEntry(id: EntryId): EntryId | undefined {
+  const order = spine.flatMap((section) => section.entries);
+  const position = order.indexOf(id);
+  return position >= 0 ? order[position + 1] : undefined;
+}

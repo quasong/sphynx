@@ -54,6 +54,7 @@ export function StepList({
   const labels = new Map(hypotheses.map((h) => [h.id, h.label]));
   const cards = useRef(new Map<number, HTMLLIElement>());
   const hasMounted = useRef(false);
+  const previousSelected = useRef(selected);
 
   // Keep the selected heading in a comfortable reading band. Earlier this
   // centred the whole card, but the card is expanding at the same time as this
@@ -75,10 +76,31 @@ export function StepList({
     const box = heading.getBoundingClientRect();
     const header =
       parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 0;
-    const topInset = header + 24;
-    const bottomInset = Math.max(topInset + 1, window.innerHeight - 32);
+    const compactFigure = document.querySelector<HTMLElement>('.entry--stepping .entry__figure');
+    const mobileStepper = document.querySelector<HTMLElement>('.entry__mobile-stepper');
+    const figureIsSticky = compactFigure && getComputedStyle(compactFigure).position === 'sticky';
+    const mobileControlsAreVisible = mobileStepper && getComputedStyle(mobileStepper).display !== 'none';
+    const topInset = figureIsSticky ? header + compactFigure.offsetHeight + 12 : header + 24;
+    const bottomInset = Math.max(
+      topInset + 1,
+      window.innerHeight - (mobileControlsAreVisible ? mobileStepper.offsetHeight + 16 : 32),
+    );
     let target = window.scrollY;
-    if (box.top < topInset) {
+    // On a phone, always align the new step directly under the compact figure:
+    // merely making its heading visible at the bottom still separates the text
+    // from the drawing the reader is trying to compare it with.
+    if (figureIsSticky) {
+      // Moving forward also closes the old card above the destination. Measure
+      // that body before its grid-row transition finishes and remove the space
+      // it is about to give back; otherwise the new heading finishes the
+      // animation hidden behind the sticky drawing.
+      const previousCard = cards.current.get(previousSelected.current);
+      const closingBody = previousSelected.current < selected
+        ? previousCard?.querySelector<HTMLElement>('.step__body-inner')
+        : null;
+      const closingHeight = closingBody ? closingBody.scrollHeight + 16 : 0;
+      target += box.top - topInset - closingHeight;
+    } else if (box.top < topInset) {
       target += box.top - topInset;
     } else if (box.bottom > bottomInset) {
       target += box.bottom - bottomInset;
@@ -86,6 +108,7 @@ export function StepList({
 
     const ceiling = scrollCeiling?.() ?? Number.POSITIVE_INFINITY;
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    previousSelected.current = selected;
 
     // A browser's native smooth scroll cannot be retargeted gracefully: a
     // quick second click interrupts the first animation and the page appears
@@ -149,6 +172,7 @@ export function StepList({
           broken={broken?.has(step.id) ?? false}
           state={i === selected ? 'current' : i < selected ? 'past' : 'future'}
           onSelect={() => onSelect(i)}
+          onSelectStep={onSelect}
         />
       ))}
     </ol>
@@ -165,6 +189,7 @@ interface StepItemProps {
   broken: boolean;
   state: 'past' | 'current' | 'future';
   onSelect(): void;
+  onSelectStep(index: number): void;
 }
 
 function StepItem({
@@ -177,6 +202,7 @@ function StepItem({
   broken,
   state,
   onSelect,
+  onSelectStep,
 }: StepItemProps) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const dependencies = (step.dependsOn ?? [])
@@ -229,6 +255,7 @@ function StepItem({
                     positions={positions}
                     labels={labels}
                     dropped={dropped}
+                    onSelectStep={onSelectStep}
                   />
                 </li>
               ))}
@@ -238,7 +265,22 @@ function StepItem({
           {dependencies.length > 0 ? (
             <p className="step__depends">
               Builds on {dependencies.length === 1 ? 'step' : 'steps'}{' '}
-              {dependencies.join(', ')}
+              {dependencies.map((position, index) => (
+                <span key={position}>
+                  {index > 0 ? ', ' : null}
+                  <button
+                    type="button"
+                    className="step__depends-link"
+                    aria-label={`Go to step ${position}`}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onSelectStep(position - 1);
+                    }}
+                  >
+                    {position}
+                  </button>
+                </span>
+              ))}
             </p>
           ) : null}
         </div>
@@ -252,11 +294,13 @@ function ReasonItem({
   positions,
   labels,
   dropped,
+  onSelectStep,
 }: {
   reason: Justification;
   positions: Map<string, number>;
   labels: Map<HypothesisId, string>;
   dropped: HypothesisId | null;
+  onSelectStep(index: number): void;
 }) {
   switch (reason.type) {
     case 'hypothesis': {
@@ -273,10 +317,19 @@ function ReasonItem({
     case 'step': {
       const at = positions.get(reason.ref);
       return (
-        <span className="reason reason--step">
+        <button
+          type="button"
+          className="reason reason--step reason--step-link"
+          aria-label={at ? `Go to step ${at}` : undefined}
+          disabled={at === undefined}
+          onClick={(event) => {
+            event.stopPropagation();
+            if (at) onSelectStep(at - 1);
+          }}
+        >
           step {at ?? '?'}
           {reason.note ? ` — ${reason.note}` : ''}
-        </span>
+        </button>
       );
     }
     case 'algebra':

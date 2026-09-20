@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { KIND_LABEL, getEntry } from '../content';
-import { spine } from '../content/spine';
+import { nextSpineEntry, spine } from '../content/spine';
 import { HypothesisBreakdown, HypothesisSwitches } from '../components/HypothesisPanel';
 import { MathExpr } from '../components/MathExpr';
 import { ReferencePanel } from '../components/ReferencePanel';
@@ -47,6 +47,11 @@ export function EntryPage() {
   // that column runs out. Stepping must not scroll past that point, or the
   // drawing slides off the top just as the argument concludes.
   const scrollCeiling = useCallback(() => {
+    // On the single-column layout the figure itself sticks inside the whole
+    // body, so it does not have the desktop column's lower travel limit.
+    if (window.matchMedia('(max-width: 980px)').matches) {
+      return Number.POSITIVE_INFINITY;
+    }
     const railElement = rail.current;
     const bodyElement = body.current;
     if (!railElement || !bodyElement) return Number.POSITIVE_INFINITY;
@@ -80,6 +85,7 @@ export function EntryPage() {
   const current = step.index >= 0 ? steps[step.index] : undefined;
   const broken = timeline ? stepsBrokenWithout(timeline, hypothesis.dropped) : new Set<string>();
   const section = spine.find((candidate) => candidate.entries.includes(entry.id));
+  const nextEntry = getEntry(nextSpineEntry(entry.id));
   const progress = steps.length === 0 || step.index === STATEMENT ? 0 : ((step.index + 1) / steps.length) * 100;
   const nextStep = steps[step.index === STATEMENT ? 0 : step.index + 1];
 
@@ -91,24 +97,40 @@ export function EntryPage() {
       <span className="stepper__position">
         {step.index === STATEMENT ? 'Statement' : `Step ${step.index + 1} of ${steps.length}`}
       </span>
-      <button
-        type="button"
-        onClick={step.next}
-        disabled={step.atEnd}
-        title={nextStep?.title}
-        aria-label={nextStep ? `${step.index === STATEMENT ? 'Start' : 'Next'}: ${nextStep.title}` : undefined}
-      >
-        <span className="stepper__next-label">
-          <span>{step.index === STATEMENT ? 'Start' : 'Next'}</span>
-          {nextStep ? <span className="stepper__next-title">{nextStep.title}</span> : null}
-          <span aria-hidden="true">→</span>
-        </span>
-      </button>
+      {step.atEnd ? (
+        <Link
+          className="stepper__continue"
+          to={nextEntry ? `/e/${nextEntry.id}` : '/'}
+          title={nextEntry?.title ?? 'Back to the library'}
+          aria-label={nextEntry ? `Next entry: ${nextEntry.title}` : 'Proof complete. Back to the library'}
+        >
+          <span className="stepper__next-label">
+            <span>{nextEntry ? 'Next entry' : 'Complete'}</span>
+            <span className="stepper__next-title">
+              {nextEntry?.title ?? 'Back to the library'}
+            </span>
+            <span aria-hidden="true">→</span>
+          </span>
+        </Link>
+      ) : (
+        <button
+          type="button"
+          onClick={step.next}
+          title={nextStep?.title}
+          aria-label={nextStep ? `${step.index === STATEMENT ? 'Start' : 'Next'}: ${nextStep.title}` : undefined}
+        >
+          <span className="stepper__next-label">
+            <span>{step.index === STATEMENT ? 'Start' : 'Next'}</span>
+            {nextStep ? <span className="stepper__next-title">{nextStep.title}</span> : null}
+            <span aria-hidden="true">→</span>
+          </span>
+        </button>
+      )}
     </nav>
   );
 
   return (
-    <main className={`page entry ${Figure ? '' : 'entry--no-figure'}`}>
+    <main className={`page entry ${Figure ? '' : 'entry--no-figure'} ${step.index >= 0 ? 'entry--stepping' : ''} ${hypotheses.length > 0 ? 'entry--has-hypotheses' : ''}`}>
       <header className="entry__head">
         <nav className="entry__breadcrumb" aria-label="Breadcrumb">
           <Link to="/">Library</Link>

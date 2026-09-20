@@ -1040,7 +1040,10 @@ code {
   border-radius: var(--radius);
 }
 
-.stepper button {
+.stepper button,
+.stepper__continue {
+  display: inline-flex;
+  align-items: center;
   font: inherit;
   font-size: 14px;
   padding: 6px 12px;
@@ -1050,9 +1053,11 @@ code {
   background: var(--surface);
   color: var(--text);
   cursor: pointer;
+  text-decoration: none;
 }
 
-.stepper button:hover:not(:disabled) {
+.stepper button:hover:not(:disabled),
+.stepper__continue:hover {
   background: var(--accent-soft);
   border-color: var(--accent);
 }
@@ -1060,6 +1065,16 @@ code {
 .stepper button:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+.stepper > button:first-child,
+.stepper__position,
+.stepper__next-label > span:first-child {
+  white-space: nowrap;
+}
+
+.stepper__continue {
+  min-width: 0;
 }
 
 .stepper__next-label {
@@ -1254,6 +1269,30 @@ code {
   margin: 10px 0 0;
   font-size: 12px;
   color: var(--text-faint);
+}
+
+.step__depends-link,
+.reason--step-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.step__depends-link:hover,
+.reason--step-link:hover {
+  text-decoration-color: currentColor;
+}
+
+.reason--step-link:disabled {
+  color: var(--text-faint);
+  cursor: default;
+  text-decoration: none;
 }
 
 .reason {
@@ -1477,6 +1516,83 @@ code {
 
   .entry__figure-sticky {
     position: static;
+  }
+
+  /* Once a proof starts, the drawing becomes a compact sticky stage. The
+     selected step is scrolled directly beneath it by StepList, keeping cause
+     and visual effect inside one phone-sized glance. */
+  .entry--stepping .entry__figure {
+    position: sticky;
+    top: var(--topbar-h);
+    z-index: 12;
+    align-self: start;
+    margin: 0 -20px 16px;
+    padding: 8px 20px;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  .entry--stepping .entry__figure-sticky {
+    max-height: none;
+    overflow: visible;
+    gap: 7px;
+  }
+
+  .entry--stepping .entry__figure .figure {
+    padding: 7px;
+    box-shadow: var(--shadow);
+  }
+
+  .entry--stepping .entry__figure .figure__svg {
+    height: clamp(150px, 24vh, 210px);
+    max-height: none;
+  }
+
+  .entry--stepping.entry--has-hypotheses .entry__figure .figure__svg {
+    height: clamp(118px, 18vh, 160px);
+  }
+
+  .entry--stepping .entry__figure .figure__caption,
+  .entry--stepping .entry__figure .entry__hint {
+    display: none;
+  }
+
+  .entry--stepping .entry__figure .switches {
+    padding: 6px 8px;
+  }
+
+  .entry--stepping .entry__figure .switches h2 {
+    margin-bottom: 5px;
+  }
+
+  .entry--stepping .entry__figure .switches__hint,
+  .entry--stepping .entry__figure .switch__state {
+    display: none;
+  }
+
+  .entry--stepping .entry__figure .switches ul {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .entry--stepping .entry__figure .switches ul::-webkit-scrollbar {
+    display: none;
+  }
+
+  .entry--stepping .entry__figure .switches li {
+    flex: 0 0 auto;
+  }
+
+  .entry--stepping .entry__figure .switch {
+    padding: 5px 8px;
+  }
+
+  .entry--stepping .entry__figure .switch__label {
+    font-size: 14px;
   }
 
   .page {

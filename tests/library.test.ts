@@ -5,6 +5,7 @@ import { findPresentationProblems } from '../scripts/content-presentation';
 import { stepsBrokenWithout } from '../src/lib/hypotheses';
 import { buildTree, trunkIds } from '../src/lib/tree';
 import { parseStep, stepParams, clampStep, STATEMENT } from '../src/lib/stepUrl';
+import { nextSpineEntry } from '../src/content/spine';
 import type { Entry, Timeline } from '../src/types/entry';
 
 test('the current library has valid references, formulas and figure registrations', () => {
@@ -97,4 +98,10 @@ test('step deep links reject invalid values, clamp navigation and preserve the h
   assert.equal(stepParams(last, -3, 7).has('step'), false);
   assert.equal(stepParams(last, 0, 0).has('step'), false);
   assert.equal(clampStep(Number.NaN, 7), STATEMENT);
+});
+
+test('the declared reading path exposes a next entry and ends cleanly', () => {
+  assert.equal(nextSpineEntry('thm.sqrt2-irrational'), 'def.supremum');
+  assert.equal(nextSpineEntry('thm.gronwall'), undefined);
+  assert.equal(nextSpineEntry('lem.even-square'), undefined);
 });
